@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 import CourseSelector from './components/course-selector';
+import Course from './components/course';
 
 function App() {
   const [courseUrl, setCourseUrl] = useState('https://raw.githubusercontent.com/Ada-Developers-Academy/core/main/c19/seattle/course.yaml');
-  const [courseData, setCourseData] = useState({});
+  const [courseYaml, setCourseYaml] = useState("");
   const [lastError, setLastError] = useState(null);
 
   const loadCourseData = (courseUrl: string): () => void => {
@@ -12,8 +13,8 @@ function App() {
     const goFetch = async () => {
       try {
         const res = await fetch(courseUrl, { signal: abortController.signal });
-        const data = await res.text();
-        setCourseData(data);
+        const yaml = await res.text();
+        setCourseYaml(yaml);
         setLastError(null);
       } catch(err: any) {
         setLastError(err.message)
@@ -47,7 +48,7 @@ function App() {
         { lastError && <span id="error">Error: {lastError}</span>}
       </nav>
       <main>
-        {/* { courseData?.title } */}
+        <Course courseYaml={courseYaml} />
       </main>
       <footer>
         &copy;2023 Cyvaer

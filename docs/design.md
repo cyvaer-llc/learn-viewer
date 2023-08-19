@@ -21,3 +21,30 @@ To get a high level prototype going, we should:
    - Summarize all of the possible types of `ContentFiles`
    - Summarize all of the possible types of `SuccessCriteria`
    - List each `ContentFile` and its type in each Standard.
+
+#### YAML Structure
+The structure of the objects we get from the `course.yaml` are:
+
+```JSON
+{
+  ":Course": [
+    {
+      ":Section": "Precourse",
+      ":Repos": [
+        {
+          ":Url": "https://github.com/ada-developers-academy/ada-precourse-v2"
+        }
+      ]
+    },
+    {
+      ":Section": "About Ada",
+      ":Repos": [
+        {
+          ":Url": "https://github.com/Ada-Developers-Academy/core-about-ada"
+        }
+      ]
+    },
+    /* [...] */
+  ]
+}
+```

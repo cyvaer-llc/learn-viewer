@@ -1,11 +1,21 @@
+import { CourseModel } from '../models/course';
+
 type CourseProps = {
-  course: string
+  courseYaml: string
 }
 
 export default function Course(props: CourseProps) {
-  const { course } = props;
+  const { courseYaml } = props;
 
+  const courseModel = new CourseModel(courseYaml);
 
-
-  return <>{course}</>
+  return (
+    <ul>
+      {courseModel.sections.map(section =>
+        <li key={section.repoUrl}>
+          <a href={section.repoUrl}>{section.name}</a>
+        </li>
+      )}
+    </ul>
+  )
 }
