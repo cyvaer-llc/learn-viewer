@@ -4,5 +4,8 @@ type CourseProps = {
 
 export default function Course(props: CourseProps) {
   const { course } = props;
-  return <></>
+
+
+
+  return <>{course}</>
 }

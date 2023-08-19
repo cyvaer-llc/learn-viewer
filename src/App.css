@@ -23,3 +23,7 @@ footer {
   justify-content: space-around;
   min-height: 100vh;
 }
+
+#error {
+  color: rgb(223, 20, 95);
+}
