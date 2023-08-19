@@ -43,7 +43,7 @@ function App() {
   return (
     <>
       <nav>
-        <h1>Markdown Loader</h1>
+        <h1>Ada Curriculum Viewer</h1>
         <CourseSelector course={courseUrl} setCourse={onCourseSet} />
         { lastError && <span id="error">Error: {lastError}</span>}
       </nav>

@@ -1,4 +1,5 @@
 import { CourseModel } from '../models/course';
+import Section from './section';
 
 type CourseProps = {
   courseYaml: string
@@ -12,9 +13,7 @@ export default function Course(props: CourseProps) {
   return (
     <ul>
       {courseModel.sections.map(section =>
-        <li key={section.repoUrl}>
-          <a href={section.repoUrl}>{section.name}</a>
-        </li>
+        <Section key={section.repoUrl} section={section} />
       )}
     </ul>
   )
