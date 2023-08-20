@@ -1,38 +1,10 @@
 import yaml from 'js-yaml';
-
-class ContentFileModel {
-  public type: string;
-  public uid: string;
-  public path: string;
-
-  constructor(contentFileYaml: any) {
-    this.type = contentFileYaml.Type;
-    this.uid = contentFileYaml.UID;
-    this.path = contentFileYaml.Path;
-  }
-}
-
-export class StandardModel {
-  public title: string;
-  public description: string;
-  public uid: string;
-  public successCriteria: string[];
-  public contentFiles: ContentFileModel[];
-
-  constructor(standardData: any) {
-    this.title = standardData.Title;
-    this.description = standardData.Description;
-    this.uid = standardData.UID;
-    this.successCriteria = standardData.SuccessCriteria;
-    this.contentFiles = standardData.ContentFiles?.map(
-      (contentFile: any) => new ContentFileModel(contentFile)
-    ) || [];
-  }
-}
+import { StandardModel } from './standard';
 
 export class SectionModel {
   public name: string;
   public repoUrl: string;
+  public standards: StandardModel[] | null = null;
 
   constructor(name: string, repos: string[]) {
     this.name = name;
@@ -46,7 +18,11 @@ export class SectionModel {
     this.repoUrl = repoObj[":Url"] || "";
   }
 
-  async fetchStandardsConfig(signal: AbortSignal | undefined): Promise<StandardModel[]> {
+  async fetchStandardsConfig(signal?: AbortSignal): Promise<StandardModel[]> {
+    if (this.standards !== null) {
+      return this.standards;
+    }
+
     // The config.yaml will be in the root repo. We want to get the raw text.
     const yamlUrl = this.repoUrl
       .replace("github.com", "raw.githubusercontent.com")
@@ -55,8 +31,12 @@ export class SectionModel {
     const res = await fetch(yamlUrl, { signal });
     const rawStandardsYaml = await res.text();
     const standardsData: any = yaml.load(rawStandardsYaml);
-    return standardsData?.Standards.map(
+
+    const standards = standardsData?.Standards.map(
       (standardData: any) => new StandardModel(standardData)
     ) || [];
+
+    this.standards = standards;
+    return standards;
   }
 }
