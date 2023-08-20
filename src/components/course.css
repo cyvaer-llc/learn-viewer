@@ -1,3 +1,7 @@
 #root-course-list {
   padding-left: 0;
 }
+
+ul:has(li > details) {
+  list-style: none;
+}
