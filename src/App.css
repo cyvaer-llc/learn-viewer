@@ -61,4 +61,11 @@ nav > input {
 
 #markdown-container {
   /* overflow-y: scroll; */
+  overflow-x: hidden;
+}
+
+pre:has(code) {
+  overflow-x: scroll;
+  padding: 1em;
+  background-color: #00000010;
 }
