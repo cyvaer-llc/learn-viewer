@@ -11,6 +11,27 @@ We'll use React Markdown because:
 1. remarkjs appears to be the popular choice
 2. It's easy to use.
 
+### Remark Configuration
+We may be able to use `transformLinkUri` for relative links?
+
+### Plugins
+The first issue we run into is that there is heavy customization of the markdown in the curriculum. For example, callouts are a special snowflake, and there aren't any existing plugins that handle them:
+
+```md
+<!-- available callout types: info, success, warning, danger, secondary  -->
+### !callout-info
+
+## `table_name.column_name` Syntax
+
+We are using the syntax `table_name.column_name` to differentiate between columns in the `clients` table and columns in the `rentals` table. In cases where the column names do not conflict, this is optional, but explicitly referring to the table can help remind us what the source of the data is.
+
+### !end-callout
+```
+
+One path forward might be to write plugins for each special syntax override. Here's an example I found of a custom plugin written to handle callouts: [@portaljs/remark-callouts](https://www.npmjs.com/package/@portaljs/remark-callouts) ([src](https://github.com/datopian/portaljs/blob/main/packages/remark-callouts/src/lib/remark-callouts.ts)). If only they had been written with a directive syntax so that we could use [Microflash/remark-callout-directives](https://github.com/Microflash/remark-callout-directives#example-callout-with-custom-title)!
+
+A similar example for plugins might be [remark-hint](https://github.com/sergioramos/remark-hint).
+
 ## Curriculum structure
 ### Courses
 The Ada curriculum is organized into a "course" for every cohort/campus. The course is described in a YAML file. For example: [c19/seattle/course.yaml](https://github.com/Ada-Developers-Academy/core/blob/main/c19/seattle/course.yaml).
