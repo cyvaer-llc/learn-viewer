@@ -1,4 +1,4 @@
-import { SetMarkdownAction } from "./markdown-actions";
+import { ClearMarkdownAction, SetMarkdownAction } from "./markdown-actions";
 
 export const INITIAL_STATE = {
   currentMarkdown: ""
@@ -12,6 +12,7 @@ export type Action = {
 export default function currentMarkdownReducer(state: typeof INITIAL_STATE, action: Action): typeof INITIAL_STATE  {
   switch(action.type) {
     case SetMarkdownAction.TYPE:
+    case ClearMarkdownAction.TYPE:
       return { ...state, currentMarkdown: action.payload };
     default:
       return state;
