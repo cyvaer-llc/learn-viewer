@@ -1,4 +1,4 @@
-nav {
+header {
   padding: 1rem;
   display: flex;
   background-color: var(--dark-bg-color);
@@ -18,11 +18,11 @@ footer {
   color: white;
 }
 
-nav > h1 {
+header > h1 {
   margin: 0;
 }
 
-nav > input {
+header > input {
   padding-left: 1em;
   font-size: 1em;
 }
@@ -45,8 +45,8 @@ nav > input {
 }
 
 .right-align {
-  display: flex;
-  justify-content: flex-end;
+  float: right;
+  margin-top: 1.2em;
 }
 
 /* TODO: This isn't sticky-ing. The grid probably needs to have a container for the markdown

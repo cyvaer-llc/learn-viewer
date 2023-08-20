@@ -55,11 +55,11 @@ function App() {
 
   return (
     <CurrentMarkdownDispatchContext.Provider value={dispatchMarkdown}>
-      <nav>
+      <header>
         <h1>Ada Curriculum Viewer</h1>
         <CourseSelector course={courseUrl} setCourse={onCourseSet} />
         { lastError && <span id="error">Error: {lastError}</span>}
-      </nav>
+      </header>
       <main className='split-screen'>
         <Course courseYaml={courseYaml} />
         <div id="markdown-container">

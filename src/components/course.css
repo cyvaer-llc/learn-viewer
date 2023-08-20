@@ -1,7 +1,13 @@
 #root-course-list {
   padding-left: 0;
+  padding-right: 1em;
+  border-right: 1px solid lightgray;
 }
 
 ul:has(li > details) {
   list-style: none;
+}
+
+li:has(details) {
+  margin-bottom: .7em;
 }

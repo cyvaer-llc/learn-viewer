@@ -13,10 +13,12 @@ export default function Course(props: CourseProps) {
   const courseModel = new CourseModel(courseYaml);
 
   return (
-    <ul id="root-course-list">
-      {courseModel.sections.map(section =>
-        <Section key={section.repoUrl} section={section} />
-      )}
-    </ul>
+    <nav>
+      <ul id="root-course-list">
+        {courseModel.sections.map(section =>
+          <Section key={section.repoUrl} section={section} />
+        )}
+      </ul>
+    </nav>
   )
 }

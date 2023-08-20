@@ -1,6 +1,15 @@
 /* Global App style rules */
 h1 {
 	font-size: 2.5rem;
+	font-weight: 200;
+}
+
+h2 {
+	font-weight: 400;
+}
+
+h3 {
+	font-weight: 400;
 }
 
 body {
@@ -11,8 +20,4 @@ body {
 /* Palette variables */
 :root {
 	--dark-bg-color: rgb(37, 84, 136);
-}
-
-li {
-	margin-bottom: .3em;
 }

@@ -9,10 +9,12 @@ Options for markdown processing include:
 
 We'll use React Markdown because:
 1. remarkjs appears to be the popular choice
-2. It's easy to use.
+2. It's easy to hook up.
 
 ### Remark Configuration
-We may be able to use `transformLinkUri` for relative links?
+Things to do:
+- [ ] We may be able to use `transformLinkUri` for relative links?
+- [ ] Syntax highlighting that detects `language-` prefixed classes on a `code` tag.
 
 ### Plugins
 The first issue we run into is that there is heavy customization of the markdown in the curriculum. For example, callouts are a special snowflake, and there aren't any existing plugins that handle them:
@@ -79,3 +81,8 @@ Repos have their own `config.yaml`. That structure is slightly more extensive. E
 - [Section](../src/models/section.ts) (a list of Standards with title & url)
 - [Standard](../src/models/standard.ts) (a grouping of Content Files with some metadata)
 - [Content File](../src/models/content-file.ts) (metadata about an actual lesson / exercise / activity, and its actual markdown).
+
+## Other TODOs
+- [ ] Deep links (e.g. to Unit 2 > Intro To SQL)
+- [ ] Deploy (maybe to AWS S3? Either with Amplify or GH Actions?)
+- [ ] Have an external link to Content Items in github (not the raw yaml but the github links) next to the entry to load the markdown
