@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { SectionModel } from "../models/section";
 import { StandardModel } from '../models/standard';
+import { Standard } from "./standard";
 
 type SectionProps = {
   section: SectionModel
 }
+
 
 export default function Section(props: SectionProps) {
   const { section } = props;
@@ -18,7 +20,7 @@ export default function Section(props: SectionProps) {
     setStandards(newStandards);
   }
 
-  // Uncomment this code if you decide you want to fetch all standards on mount.
+  // TODO: Uncomment this code if you decide you want to fetch all standards on mount.
   // useEffect(() => {
   //   const abortCtrl = new AbortController();
   //   fetchStandards(abortCtrl.signal);
@@ -35,28 +37,15 @@ export default function Section(props: SectionProps) {
 
   return (
     <li>
-      <details onToggle={ standardToggled }>
+      <details onToggle={standardToggled}>
         <summary><a href={section.repoUrl}>{section.name}</a></summary>
-        { loadingStandards && "Loading..." }
-        { standards && standards.map(standard => 
-          <ul>
-            <li>
-              <details>
-                <summary>{ standard.title }: {standard.description}</summary>
-                <ul>
-                  {
-                    standard.contentFiles && standard.contentFiles.map(contentFile =>
-                      <li>
-                        {contentFile.type}: { contentFile.path }
-                      </li>
-                    )
-                  }
-                </ul>
-              </details>
-            </li>
-          </ul>
+        <ul>
+          {loadingStandards && "Loading..."}
+          {standards && standards.map(standard =>
+            <Standard standard={standard} key={standard.uid} />
           )
-        }
+          }
+        </ul>
       </details>
     </li>
   )

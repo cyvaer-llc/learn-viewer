@@ -2,9 +2,9 @@ import yaml from 'js-yaml';
 import { StandardModel } from './standard';
 
 export class SectionModel {
-  public name: string;
-  public repoUrl: string;
-  public standards: StandardModel[] | null = null;
+  readonly name: string;
+  readonly repoUrl: string;
+  private standards: StandardModel[] | null = null;
 
   constructor(name: string, repos: string[]) {
     this.name = name;
@@ -23,17 +23,17 @@ export class SectionModel {
       return this.standards;
     }
 
-    // The config.yaml will be in the root repo. We want to get the raw text.
-    const yamlUrl = this.repoUrl
-      .replace("github.com", "raw.githubusercontent.com")
-      + '/main/config.yaml';
+    // The config.yaml will be in the root of the repo.
+    // We want to get the raw text, so we transform the github URL to the raw githubusercontent version.
+    const yamlRootUrl = this.repoUrl.replace("github.com", "raw.githubusercontent.com") + '/main';
+    const yamlUrl = yamlRootUrl + '/config.yaml';
 
     const res = await fetch(yamlUrl, { signal });
     const rawStandardsYaml = await res.text();
     const standardsData: any = yaml.load(rawStandardsYaml);
 
     const standards = standardsData?.Standards.map(
-      (standardData: any) => new StandardModel(standardData)
+      (standardData: any) => new StandardModel(standardData, yamlRootUrl)
     ) || [];
 
     this.standards = standards;

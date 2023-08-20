@@ -2,7 +2,7 @@ import yaml from 'js-yaml';
 import { SectionModel } from './section';
 
 export class CourseModel {
-  public sections: SectionModel[]
+  readonly sections: SectionModel[]
 
   constructor(courseYaml: string) {
     const courseData: any = yaml.load(courseYaml);

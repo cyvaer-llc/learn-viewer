@@ -1,29 +1,19 @@
-class ContentFileModel {
-  public type: string;
-  public uid: string;
-  public path: string;
-
-  constructor(contentFileYaml: any) {
-    this.type = contentFileYaml.Type;
-    this.uid = contentFileYaml.UID;
-    this.path = contentFileYaml.Path;
-  }
-}
+import { ContentFileModel } from "./content-file";
 
 export class StandardModel {
-  public title: string;
-  public description: string;
-  public uid: string;
-  public successCriteria: string[];
-  public contentFiles: ContentFileModel[];
+  readonly title: string;
+  readonly description: string;
+  readonly uid: string;
+  readonly successCriteria: string[];
+  readonly contentFiles: ContentFileModel[];
 
-  constructor(standardData: any) {
+  constructor(standardData: any, yamlRootUrl: string) {
     this.title = standardData.Title;
     this.description = standardData.Description;
     this.uid = standardData.UID;
     this.successCriteria = standardData.SuccessCriteria;
     this.contentFiles = standardData.ContentFiles?.map(
-      (contentFile: any) => new ContentFileModel(contentFile)
+      (contentFile: any) => new ContentFileModel(contentFile, yamlRootUrl)
     ) || [];
   }
 }
