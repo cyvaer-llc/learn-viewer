@@ -18,6 +18,15 @@ footer {
   color: white;
 }
 
+nav > h1 {
+  margin: 0;
+}
+
+nav > input {
+  padding-left: 1em;
+  font-size: 1em;
+}
+
 #root {
   display: flex;
   flex-direction: column;
@@ -33,4 +42,23 @@ footer {
   display: grid;
   grid-template-columns: 1fr 2fr;
   gap: 1em;
+}
+
+.right-align {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* TODO: This isn't sticky-ing. The grid probably needs to have a container for the markdown
+         with a overflow-y: scroll */
+.close-btn {
+  font-size: 2em;
+  width: 1.5em;
+  height: 1.5em;
+  position: sticky;
+  top: 0;
+}
+
+#markdown-container {
+  /* overflow-y: scroll; */
 }

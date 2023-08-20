@@ -1,0 +1,9 @@
+.__title {
+  display: inline-block;
+}
+
+.desc {
+  display: block;
+  font-size: 0.8em;
+  margin-left: 1.1em;
+}

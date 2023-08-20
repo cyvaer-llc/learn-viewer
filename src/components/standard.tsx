@@ -2,6 +2,8 @@ import { useState } from "react";
 import { StandardModel } from "../models/standard";
 import ContentFile from "./content-file";
 
+import './standard.css';
+
 type StandardProps = {
   standard: StandardModel
 }
@@ -17,11 +19,14 @@ export function Standard(props: StandardProps) {
 
   return (<li>
     <details onToggle={ detailsToggled }>
-      <summary>{title}: {description}</summary>
+      <summary>
+        <div className="__title">{title}</div>
+        <div className="desc">{description}</div>
+      </summary>
       <ul>
         {
           contentFiles && contentFiles.map(contentFile =>
-            <ContentFile contentFile={contentFile} load={loadContent} />
+            <ContentFile key={contentFile.uid} contentFile={contentFile} load={loadContent} />
           )
         }
       </ul>
