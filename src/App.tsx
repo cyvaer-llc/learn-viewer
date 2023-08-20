@@ -7,6 +7,7 @@ import { CurrentMarkdownDispatchContext } from './contexts/current-markdown';
 
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
 import { ClearMarkdownAction } from './actions/markdown-actions';
 
 function App() {
@@ -67,7 +68,12 @@ function App() {
               <button className='close-btn' onClick={close}>&times;</button>
             </div> }
           { !mdState.currentMarkdown && <>&larr; Please select an item</> }
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>{ mdState.currentMarkdown }</ReactMarkdown>
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            rehypePlugins={[rehypeRaw]}
+          >
+            { mdState.currentMarkdown }
+          </ReactMarkdown>
         </div>
       </main>
       <footer>
