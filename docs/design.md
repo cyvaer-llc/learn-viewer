@@ -36,7 +36,7 @@ A similar example for plugins might be [remark-hint](https://github.com/sergiora
 
 ## Curriculum structure
 ### Courses
-The Ada curriculum is organized into a "course" for every cohort/campus. The course is described in a YAML file. For example: [c19/seattle/course.yaml](https://github.com/Ada-Developers-Academy/core/blob/main/c19/seattle/course.yaml).
+Learn curricula are organized into a "course" for every cohort/campus. The course is described in a YAML file. For example: [c19/seattle/course.yaml](https://github.com/Ada-Developers-Academy/core/blob/main/c19/seattle/course.yaml).
 
 > YAML parser: [js-yaml](https://www.npmjs.com/package/js-yaml)
 

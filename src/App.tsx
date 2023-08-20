@@ -10,8 +10,10 @@ import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import { ClearMarkdownAction } from './actions/markdown-actions';
 
+const DEFAULT_COURSE = 'https://raw.githubusercontent.com/Ada-Developers-Academy/core/main/c19/seattle/course.yaml';
+
 function App() {
-  const [courseUrl, setCourseUrl] = useState('https://raw.githubusercontent.com/Ada-Developers-Academy/core/main/c19/seattle/course.yaml');
+  const [courseUrl, setCourseUrl] = useState(DEFAULT_COURSE);
   const [courseYaml, setCourseYaml] = useState("");
   const [lastError, setLastError] = useState(null);
   const [mdState, dispatchMarkdown] = useReducer(currentMarkdownReducer, INITIAL_STATE);
@@ -56,7 +58,7 @@ function App() {
   return (
     <CurrentMarkdownDispatchContext.Provider value={dispatchMarkdown}>
       <header>
-        <h1>Ada Curriculum Viewer</h1>
+        <h1>Learn Curriculum Viewer</h1>
         <CourseSelector course={courseUrl} setCourse={onCourseSet} />
         { lastError && <span id="error">Error: {lastError}</span>}
       </header>
