@@ -38,7 +38,9 @@ export default function Section(props: SectionProps) {
   return (
     <li>
       <details onToggle={standardToggled}>
-        <summary><a href={section.repoUrl}>{section.name}</a></summary>
+        <summary>
+          <a href={section.repoUrl} target="_blank" rel="noopener noreferrer">{section.name}</a>
+        </summary>
         <ul>
           {loadingStandards && "Loading..."}
           {standards && standards.map(standard =>

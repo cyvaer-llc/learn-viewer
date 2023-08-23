@@ -9,7 +9,7 @@ type StandardProps = {
 }
 
 export function Standard(props: StandardProps) {
-  const { standard: { title, description, contentFiles } } = props;
+  const { standard: { title, description, contentFiles, url } } = props;
 
   const [loadContent, setLoadContent] = useState(false);
 
@@ -20,7 +20,9 @@ export function Standard(props: StandardProps) {
   return (<li>
     <details onToggle={ detailsToggled }>
       <summary>
-        <div className="__title">{title}</div>
+        <div className="__title">
+          <a href={url} target="_blank" rel="noopener noreferrer">{title}</a>
+        </div>
         <div className="desc">{description}</div>
       </summary>
       <ul>
