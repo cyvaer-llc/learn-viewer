@@ -2,13 +2,13 @@ import { SyntheticEvent, useEffect, useReducer, useState } from 'react';
 import './App.css';
 import CourseSelector from './components/course-selector';
 import Course from './components/course';
-import currentMarkdownReducer, { INITIAL_STATE } from './actions/current-markdown-reducer';
+import currentMarkdownReducer, { INITIAL_STATE } from './reducers/current-markdown-reducer';
 import { CurrentMarkdownDispatchContext } from './contexts/current-markdown';
 
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
-import { ClearMarkdownAction } from './actions/markdown-actions';
+import { ClearMarkdownAction } from './reducers/markdown-actions';
 
 const DEFAULT_COURSE = 'https://raw.githubusercontent.com/Ada-Developers-Academy/core/main/c19/seattle/course.yaml';
 

@@ -1,7 +1,7 @@
 import { SyntheticEvent, useContext, useEffect, useState } from "react";
 import { ContentFileModel } from "../models/content-file";
 import { CurrentMarkdownDispatchContext } from "../contexts/current-markdown";
-import { SetMarkdownAction } from '../actions/markdown-actions';
+import { SetMarkdownAction } from '../reducers/markdown-actions';
 
 type ContentFileProps = {
   contentFile: ContentFileModel,
