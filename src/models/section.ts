@@ -18,7 +18,7 @@ export class SectionModel {
     }
 
     const repoObj: any | undefined = repos?.[0];
-    this.repoUrl = repoObj[":Url"] || "";
+    this.repoUrl = repoObj[":Url"] || repoObj[":URL"] || "";
   }
 
   async fetchStandardsConfig(signal?: AbortSignal): Promise<StandardModel[]> {
