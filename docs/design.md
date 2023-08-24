@@ -20,6 +20,7 @@ Things to do or consider:
       - Maybe [remark-prism](https://github.com/sergioramos/remark-prism)?
       - Maybe [remark-torchlight](https://github.com/torchlight-api/remark-torchlight)?
 - [ ] Code Sandbox for code that is supposed to be runnable? [remark-codesandbox](https://github.com/kevin940726/remark-codesandbox)
+- [ ] Use `rehype-sanitize`` to sanitize the input markup, but also override it (possibly using its [Schema](https://github.com/syntax-tree/hast-util-sanitize#schema) API?) in order to allow the embedded videos that are iframes.
 
 ### Plugins
 The first issue we run into is that there is heavy customization of the markdown in the curriculum. For example, callouts are a special snowflake, and there aren't any existing plugins that handle them:
