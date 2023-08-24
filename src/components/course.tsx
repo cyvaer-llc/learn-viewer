@@ -1,3 +1,4 @@
+import React from 'react';
 import { CourseModel } from '../models/course';
 import Section from './section';
 

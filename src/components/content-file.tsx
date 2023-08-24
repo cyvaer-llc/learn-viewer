@@ -1,3 +1,4 @@
+import React from "react";
 import { SyntheticEvent, useContext, useEffect, useState } from "react";
 import { ContentFileModel } from "../models/content-file";
 import { CurrentMarkdownDispatchContext } from "../contexts/current-markdown";

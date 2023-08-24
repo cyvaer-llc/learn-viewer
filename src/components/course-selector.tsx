@@ -1,3 +1,4 @@
+import React from 'react';
 import './course-selector.css';
 
 type CourseSelectorProps = {
