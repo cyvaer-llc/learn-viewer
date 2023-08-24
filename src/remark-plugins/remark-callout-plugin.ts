@@ -1,10 +1,9 @@
-import { visit, CONTINUE, SKIP, type Visitor, type VisitorResult } from 'unist-util-visit';
-import { findAfter } from "unist-util-find-after";
+import { visit, SKIP, type Visitor, type VisitorResult } from 'unist-util-visit';
 import type { Plugin, Transformer } from 'unified';
-import type { Node, Data, Parent } from 'unist';
-import type { Root, Paragraph, Heading } from 'mdast';
+import type { Node, Parent } from 'unist';
+import type { Root, Heading, Text } from 'mdast';
 
-const visitor: Visitor<Paragraph> = (node: Node, index: number | null, parent: Parent | null): VisitorResult => {
+const visitor: Visitor<Node> = (node: Node, index: number | null, parent: Parent | null): VisitorResult => {
   if (parent === null || index === null) return SKIP;
 
   if (node.type === 'heading') {
@@ -12,7 +11,7 @@ const visitor: Visitor<Paragraph> = (node: Node, index: number | null, parent: P
     if (isCalloutStart(headingNode)) {
       const calloutType = getStartCalloutType(headingNode);
       let closingNodeIdx = index;
-      while (!isCalloutEnd(parent.children[closingNodeIdx], closingNodeIdx, parent)) {
+      while (!isCalloutEnd(parent.children[closingNodeIdx])) {
         closingNodeIdx++;
       }
 
@@ -41,13 +40,18 @@ const visitor: Visitor<Paragraph> = (node: Node, index: number | null, parent: P
 
 function isCalloutStart(node: Heading): boolean {
   // The start callout is a depth-3 heading that begins with !callout-
-  return node.depth === 3 &&
-    node.children?.[0].type === 'text' &&
-    node.children?.[0].value.startsWith('!callout-');
+  if (node.type !== 'heading' || node.children?.length === 0 || node.children?.[0].type !== 'text') {
+    return false;
+  }
+  const headingTextNode = node.children?.[0] as Text;
+  return headingTextNode.value.startsWith('!callout-');
 }
 
 function getStartCalloutType(node: Heading): string {
-  return node.children?.[0].value.replace('!callout-', '') ?? '';
+  if (!isCalloutStart(node)) throw new Error('Node is not a callout start node');
+
+  const headingTextNode = node.children?.[0] as Text;
+  return headingTextNode.value.replace('!callout-', '') ?? '';
 }
 
 // (
@@ -56,7 +60,7 @@ function getStartCalloutType(node: Heading): string {
 //   index?: number | undefined,
 //   parent?: Parent | undefined
 // ) => boolean | undefined | void
-function isCalloutEnd(node: Node, index?: number, parent?: Parent): boolean | undefined {
+function isCalloutEnd(node: Node): boolean | undefined {
   if (node.type === 'heading') {
     const headingNode = node as Heading;
     return headingNode.depth === 3 &&

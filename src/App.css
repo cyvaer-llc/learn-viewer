@@ -60,7 +60,6 @@ header > input {
 }
 
 #markdown-container {
-  /* overflow-y: scroll; */
   overflow-x: hidden;
 }
 

@@ -1,27 +1,70 @@
+:root {
+	--success-border: rgb(26, 185, 66);
+  --warning-border: rgb(242, 206, 28);
+  --danger-border: rgb(223, 20, 20);
+}
+
 .callout {
-  background-color: lightgray;
+  /* background-color: #eee; */
+  padding: 1em;
+  border-radius: .4em;
+  border: .3em solid #f0f0f0;
+  border-bottom-width: 1px;
+  border-top-width: 1px;
+  border-right-width: 1px;
+  border-left-color: lightblue;
+  box-shadow: rgba(0, 0, 0, 0.04) 0px 3px 5px;
+  margin-block: 2em;
+}
+
+.success {
+  border-left-color: var(--success-border);
+}
+
+.warning {
+  border-left-color: var(--warning-border);
+}
+
+.danger {
+  border-left-color: var(--danger-border);
+}
+
+.secondary {
+  border-left-color: rgb(200, 228, 237);
 }
 
 .callout > h2 {
   margin-top: 0;
-  padding: 0.5em;
-  background-color: black;
-  color: white;
 }
 
-.success > h2 {
-  background-color: green;
+.callout > p {
+  margin-bottom: .25em;
 }
 
-.info > h2 {
-  background-color: blue;
+/* Heading overrides for callouts */
+.secondary > h2 {
+  font-weight: 100;
+  font-size: 1.3em;
 }
 
-.danger > h2 {
-  background-color: red;
-}
-
+/* Marker overrrides for callouts */
 .info > h2::before {
   content: "ℹ️ ";
+}
+
+.secondary > h2::before {
+  content: "ℹ ";
+}
+
+.success > h2::before {
+  content: "✅ ";
+}
+
+.warning > h2::before {
+  content: "⚠️ ";
+}
+
+.danger > h2::before {
+  content: "🛑 ";
 }
 

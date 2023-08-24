@@ -17,7 +17,13 @@ body {
 	/* font-weight: 500; */
 }
 
+pre:has(> code) {
+  border-radius: .2em;
+	box-shadow: rgba(0, 0, 0, 0.06) 0px 2px 4px 0px inset;
+}
+
 /* Palette variables */
 :root {
 	--dark-bg-color: rgb(37, 84, 136);
+	--success-border: rgb(92, 194, 92);
 }
