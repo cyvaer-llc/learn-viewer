@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { SectionModel } from "../models/section";
 import { StandardModel } from '../models/standard';
 import { Standard } from "./standard";
@@ -12,12 +12,20 @@ export default function Section(props: SectionProps) {
   const { section } = props;
   const [standards, setStandards] = useState<StandardModel[]>([]);
   const [loadingStandards, setLoadingStandards] = useState(false);
+  const [lastError, setLastError] = useState<string>('');
 
   const fetchStandards = async (signal?: AbortSignal) => {
     setLoadingStandards(true);
-    const newStandards = await section.fetchStandardsConfig(signal);
-    setLoadingStandards(false);
-    setStandards(newStandards);
+    setLastError('');
+    try {
+      const newStandards = await section.fetchStandardsConfig(signal);
+      setLoadingStandards(false);
+      setLastError('')
+      setStandards(newStandards);
+    } catch (err) {
+      setLoadingStandards(false);
+      setLastError(err.message);
+    }
   }
 
   // TODO: Uncomment this code if you decide you want to fetch all standards on mount.
@@ -42,10 +50,12 @@ export default function Section(props: SectionProps) {
           <a href={section.repoUrl} target="_blank" rel="noopener noreferrer">{section.name}</a>
         </summary>
         <ul>
-          {loadingStandards && "Loading..."}
-          {standards && standards.map(standard =>
-            <Standard standard={standard} key={standard.uid} />
-          )
+          { loadingStandards && "Loading..." }
+          { lastError && <span className="error">{ lastError }</span> }
+          {
+            standards && standards.map(standard =>
+              <Standard standard={standard} key={standard.uid} />
+            )
           }
         </ul>
       </details>
