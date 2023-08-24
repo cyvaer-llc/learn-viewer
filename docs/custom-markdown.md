@@ -1,5 +1,5 @@
-# Custom Markup
-Lessons and activities have custom component markup. In Learn, these are enclosed by `### !` followed by some marker.
+# Custom Markdown
+Lessons and activities have custom component markdown. In Learn, these are enclosed by `### !` followed by some marker.
 
 ## Known components
 * Callouts
