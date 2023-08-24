@@ -84,8 +84,8 @@ function isCalloutEnd(node: Node): boolean | undefined {
  * ### !end-callout
  *
  */
-export const plugin: Plugin<[], Root> = () => {
-  const transformer: Transformer<Root> = (tree: Root) => {
+export const plugin = () => {
+  const transformer: Transformer<Root, Node> = (tree: Root) => {
     visit(tree, 'heading', visitor);
   };
 
