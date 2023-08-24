@@ -1,7 +1,18 @@
-# MD Displayer
+# Learn Viewer
 This project loads and renders .md files created for the Learn platform so that it's possible to view open source curriculum created in that format.
 
-## TODO: Finish Setup
+## Install and run locally
+This is a Vite app. You can clone it to a local folder, and run these commands from that folder:
+
+```sh
+npm ci
+npm run dev
+```
+
+## Documentation
+See: [docs](./docs/)
+
+## Leftover project setup / TODOs:
 
 ### Expanding the ESLint configuration
 
