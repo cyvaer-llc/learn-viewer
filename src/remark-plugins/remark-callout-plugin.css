@@ -1,0 +1,27 @@
+.callout {
+  background-color: lightgray;
+}
+
+.callout > h2 {
+  margin-top: 0;
+  padding: 0.5em;
+  background-color: black;
+  color: white;
+}
+
+.success > h2 {
+  background-color: green;
+}
+
+.info > h2 {
+  background-color: blue;
+}
+
+.danger > h2 {
+  background-color: red;
+}
+
+.info > h2::before {
+  content: "ℹ️ ";
+}
+

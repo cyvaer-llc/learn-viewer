@@ -1,0 +1,93 @@
+import { visit, CONTINUE, SKIP, type Visitor, type VisitorResult } from 'unist-util-visit';
+import { findAfter } from "unist-util-find-after";
+import type { Plugin, Transformer } from 'unified';
+import type { Node, Data, Parent } from 'unist';
+import type { Root, Paragraph, Heading } from 'mdast';
+
+const visitor: Visitor<Paragraph> = (node: Node, index: number | null, parent: Parent | null): VisitorResult => {
+  if (parent === null || index === null) return SKIP;
+
+  if (node.type === 'heading') {
+    const headingNode = node as Heading;
+    if (isCalloutStart(headingNode)) {
+      const calloutType = getStartCalloutType(headingNode);
+      let closingNodeIdx = index;
+      while (!isCalloutEnd(parent.children[closingNodeIdx], closingNodeIdx, parent)) {
+        closingNodeIdx++;
+      }
+
+      // Extract the children between the start and end nodes, and remove the end node
+      const childrenBetween = parent.children.splice(index + 1, closingNodeIdx - index).slice(0, -1);
+
+      // Replace the current node with a new callout node that generates
+      // the correct div.
+      const calloutNode = {
+        type: 'callout',
+        data: {
+          hName: 'div',
+          hProperties: {
+            className: `callout ${calloutType}`
+          }
+        },
+        children: childrenBetween
+      };
+
+      // Replace the start node with the callout node.
+      parent.children.splice(index, 1, calloutNode);
+      return [SKIP, index];
+    }
+  }
+};
+
+function isCalloutStart(node: Heading): boolean {
+  // The start callout is a depth-3 heading that begins with !callout-
+  return node.depth === 3 &&
+    node.children?.[0].type === 'text' &&
+    node.children?.[0].value.startsWith('!callout-');
+}
+
+function getStartCalloutType(node: Heading): string {
+  return node.children?.[0].value.replace('!callout-', '') ?? '';
+}
+
+// (
+//   this: unknown,
+//   node: Node,
+//   index?: number | undefined,
+//   parent?: Parent | undefined
+// ) => boolean | undefined | void
+function isCalloutEnd(node: Node, index?: number, parent?: Parent): boolean | undefined {
+  if (node.type === 'heading') {
+    const headingNode = node as Heading;
+    return headingNode.depth === 3 &&
+      headingNode.children?.[0].type === 'text' &&
+      headingNode.children?.[0].value.startsWith('!end-callout');
+  }
+}
+
+/**
+ * This plugin adds container node with customizable properties in order to produce
+ * a container element like callouts and admonitions
+ *
+ * for example:
+ *
+ * ### !callout-info
+ * 
+ * ## The Title goes here
+ * 
+ * Some content with **bold text**
+ * 
+ * ### !end-callout
+ *
+ */
+export const plugin: Plugin<[], Root> = () => {
+  const transformer: Transformer<Root> = (tree: Root) => {
+    visit(tree, 'heading', visitor);
+  };
+
+  return transformer;
+};
+
+
+
+export default plugin;

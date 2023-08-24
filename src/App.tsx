@@ -8,6 +8,8 @@ import { CurrentMarkdownDispatchContext } from './contexts/current-markdown';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
+import remarkCallout from './remark-plugins/remark-callout-plugin';
+import './remark-plugins/remark-callout-plugin.css';
 import { ClearMarkdownAction } from './reducers/markdown-actions';
 
 const DEFAULT_COURSE = 'https://raw.githubusercontent.com/Ada-Developers-Academy/core/main/c19/seattle/course.yaml';
@@ -71,7 +73,7 @@ function App() {
             </div> }
           { !mdState.currentMarkdown && <>&larr; Please select an item</> }
           <ReactMarkdown
-            remarkPlugins={[remarkGfm]}
+            remarkPlugins={[remarkGfm, remarkCallout]}
             rehypePlugins={[rehypeRaw]}
           >
             { mdState.currentMarkdown }

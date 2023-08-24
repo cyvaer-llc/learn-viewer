@@ -12,9 +12,14 @@ We'll use React Markdown because:
 2. It's easy to hook up.
 
 ### Remark Configuration
-Things to do:
+Things to do or consider:
 - [ ] We may be able to use `transformLinkUri` for relative links?
+      - Or might need [remark-link-rewrite](https://github.com/rjanjic/remark-link-rewrite)
 - [ ] Syntax highlighting that detects `language-` prefixed classes on a `code` tag.
+      - Maybe [rehype-highlight](https://github.com/rehypejs/rehype-highlight)?
+      - Maybe [remark-prism](https://github.com/sergioramos/remark-prism)?
+      - Maybe [remark-torchlight](https://github.com/torchlight-api/remark-torchlight)?
+- [ ] Code Sandbox for code that is supposed to be runnable? [remark-codesandbox](https://github.com/kevin940726/remark-codesandbox)
 
 ### Plugins
 The first issue we run into is that there is heavy customization of the markdown in the curriculum. For example, callouts are a special snowflake, and there aren't any existing plugins that handle them:
