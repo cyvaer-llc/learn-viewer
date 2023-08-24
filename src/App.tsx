@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useEffect, useReducer, useState } from 'react';
+import { SyntheticEvent, useEffect, useReducer, useState } from 'react';
 import './App.css';
 import CourseSelector from './components/course-selector';
 import Course from './components/course';

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { SectionModel } from "../models/section";
 import { StandardModel } from '../models/standard';
 import { Standard } from "./standard";
@@ -22,7 +22,7 @@ export default function Section(props: SectionProps) {
       setLoadingStandards(false);
       setLastError('')
       setStandards(newStandards);
-    } catch (err) {
+    } catch (err: any) {
       setLoadingStandards(false);
       setLastError(err.message);
     }

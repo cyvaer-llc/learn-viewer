@@ -1,5 +1,5 @@
 import { visit, SKIP, type Visitor, type VisitorResult } from 'unist-util-visit';
-import type { Plugin, Transformer } from 'unified';
+import type { Transformer } from 'unified';
 import type { Node, Parent } from 'unist';
 import type { Root, Heading, Text } from 'mdast';
 

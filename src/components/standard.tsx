@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { StandardModel } from "../models/standard";
 import ContentFile from "./content-file";
 
