@@ -63,6 +63,14 @@ header > input {
   overflow-x: hidden;
 }
 
+#markdown-container img {
+  max-width: 100%;
+}
+
+#markdown-container iframe {
+  width: 100%;
+}
+
 pre:has(code) {
   overflow-x: scroll;
   padding: 1em;

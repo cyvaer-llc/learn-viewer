@@ -2,6 +2,7 @@ export class ContentFileModel {
   readonly type: string;
   readonly uid: string;
   readonly path: string;
+  readonly rootUrl: string;
   private relativePath: string;
   private markdown: string | null = null;
 
@@ -9,6 +10,7 @@ export class ContentFileModel {
     this.type = contentFileYaml.Type;
     this.uid = contentFileYaml.UID;
     this.relativePath = contentFileYaml.Path;
+    this.rootUrl = yamlRootUrl;
     this.path = yamlRootUrl + this.relativePath;
   }
 

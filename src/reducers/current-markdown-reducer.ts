@@ -1,19 +1,15 @@
-import { ClearMarkdownAction, SetMarkdownAction } from "./markdown-actions";
+import { ClearMarkdownAction, SetMarkdownAction, type MarkdownPayload, type MarkdownAction } from "./markdown-actions";
 
-export const INITIAL_STATE = {
-  currentMarkdown: ""
+export const INITIAL_STATE: MarkdownPayload = {
+  currentMarkdown: "",
+  markdownRootUrl: "",
 };
 
-export type Action = {
-  type: string,
-  payload: any // TODO: Try to make this polyvariant with a better-scoped type
-};
-
-export default function currentMarkdownReducer(state: typeof INITIAL_STATE, action: Action): typeof INITIAL_STATE  {
+export default function currentMarkdownReducer(state: typeof INITIAL_STATE, action: MarkdownAction): typeof INITIAL_STATE  {
   switch(action.type) {
     case SetMarkdownAction.TYPE:
     case ClearMarkdownAction.TYPE:
-      return { ...state, currentMarkdown: action.payload };
+      return { ...state, ...action.payload };
     default:
       return state;
   }

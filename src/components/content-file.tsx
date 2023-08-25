@@ -31,7 +31,7 @@ export default function ContentFile(props: ContentFileProps) {
   const selectMarkdown = async (evt: SyntheticEvent<HTMLAnchorElement>) => {
     evt.preventDefault();
     const markdown = await contentFile.fetchMarkdown();
-    dispatch?.(new SetMarkdownAction(markdown));
+    dispatch?.(new SetMarkdownAction(markdown, contentFile.path));
   };
 
   return (
