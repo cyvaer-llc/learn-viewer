@@ -4,6 +4,7 @@ import './App.css';
 import CourseSelector from './components/course-selector';
 import Course from './components/course';
 import currentMarkdownReducer, { INITIAL_STATE } from './reducers/current-markdown-reducer';
+import useCourseReducer from './reducers/course-reducer';
 import { CurrentMarkdownDispatchContext } from './contexts/current-markdown';
 
 import ReactMarkdown from 'react-markdown';
@@ -23,21 +24,20 @@ const DEFAULT_COURSE = COURSE_IN_QUERY || 'https://raw.githubusercontent.com/Ada
 
 function App() {
   const [courseUrl, setCourseUrl] = useState(DEFAULT_COURSE);
-  const [courseModel, setCourseModel] = useState<CourseModel | null>(null);
-  const [lastError, setLastError] = useState(null);
+  const [courseState, { setCourse: setCourseModel2, setCourseError, setCourseLoading }] = useCourseReducer();
   const [mdState, dispatchMarkdown] = useReducer(currentMarkdownReducer, INITIAL_STATE);
 
   const loadCourseData = (courseUrl: string): () => void => {
     const abortController = new AbortController();
     const goFetch = async () => {
+      setCourseLoading();
       try {
         const res = await fetch(courseUrl, { signal: abortController.signal });
         const yaml = await res.text();
         const courseModel = new CourseModel(yaml);
-        setCourseModel(courseModel);
-        setLastError(null);
+        setCourseModel2(courseModel);
       } catch(err: any) {
-        setLastError(err.message)
+        setCourseError(err.message)
       }
     };
 
@@ -57,7 +57,6 @@ function App() {
   const onCourseSet = (course: string) => {
     setCourseUrl(course);
     loadCourseData(course);
-    setLastError(null);
   }
 
   const close = (evt: SyntheticEvent<HTMLButtonElement>) => {
@@ -74,10 +73,11 @@ function App() {
       <header>
         <h1>Learn Curriculum Viewer</h1>
         <CourseSelector course={courseUrl} setCourse={onCourseSet} />
-        { lastError && <span id="error">Error: {lastError}</span>}
       </header>
       <main className='split-screen'>
-        { courseModel && <Course courseModel={courseModel} /> }
+        { courseState.course && <Course courseModel={courseState.course} /> }
+        { courseState.loading && <div className='loading'>Loading...</div> }
+        { courseState.error && <div id='error'>Error Loading Course: {courseState.error}</div> }
         <div id="markdown-container">
           { mdState.currentMarkdown && 
             <div className='right-align'>
