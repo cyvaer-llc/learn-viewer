@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './course-selector.css';
 
 type CourseSelectorProps = {
@@ -8,6 +8,10 @@ type CourseSelectorProps = {
 
 export default function CourseSelector(props: CourseSelectorProps) {
   const { course, setCourse } = props;
+
+  useEffect(() => {
+    history?.pushState({}, '', `?course=${course}`);
+  }, [course]);
 
   const onChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     setCourse(evt.target.value);

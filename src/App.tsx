@@ -15,7 +15,8 @@ import remarkFixUrls from './remark-plugins/remark-fix-urls-plugin';
 import './remark-plugins/remark-callout-plugin.css';
 import { ClearMarkdownAction } from './reducers/markdown-actions';
 
-const DEFAULT_COURSE = 'https://raw.githubusercontent.com/Ada-Developers-Academy/core/main/c19/seattle/course.yaml';
+const COURSE_IN_QUERY = new URL(window?.location.href).searchParams.get('course');
+const DEFAULT_COURSE = COURSE_IN_QUERY || 'https://raw.githubusercontent.com/Ada-Developers-Academy/core/main/c19/seattle/course.yaml';
 // Some other courses tried:
 // https://raw.githubusercontent.com/gSchool/ada-pre-course/master/course.yaml
 
