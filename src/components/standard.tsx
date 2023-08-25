@@ -9,7 +9,7 @@ type StandardProps = {
 }
 
 export function Standard(props: StandardProps) {
-  const { standard: { title, description, contentFiles, url, repoUrl } } = props;
+  const { standard: { title, description, contentFiles } } = props;
 
   const [loadContent, setLoadContent] = useState(false);
 
