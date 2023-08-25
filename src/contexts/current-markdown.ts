@@ -1,4 +1,4 @@
 import { Dispatch, createContext } from "react";
-import type { Action } from '../reducers/current-markdown-reducer';
+import type { MarkdownAction } from '../reducers/markdown-actions';
 
-export const CurrentMarkdownDispatchContext = createContext<Dispatch<Action> | null>(null);
+export const CurrentMarkdownDispatchContext = createContext<Dispatch<MarkdownAction> | null>(null);
