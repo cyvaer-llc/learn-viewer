@@ -14,6 +14,7 @@ import remarkCallout from './remark-plugins/remark-callout-plugin';
 import remarkFixUrls from './remark-plugins/remark-fix-urls-plugin';
 import './remark-plugins/remark-callout-plugin.css';
 import { ClearMarkdownAction } from './reducers/markdown-actions';
+import { CourseModel } from './models/course';
 
 const COURSE_IN_QUERY = new URL(window?.location.href).searchParams.get('course');
 const DEFAULT_COURSE = COURSE_IN_QUERY || 'https://raw.githubusercontent.com/Ada-Developers-Academy/core/main/c19/seattle/course.yaml';
@@ -22,7 +23,7 @@ const DEFAULT_COURSE = COURSE_IN_QUERY || 'https://raw.githubusercontent.com/Ada
 
 function App() {
   const [courseUrl, setCourseUrl] = useState(DEFAULT_COURSE);
-  const [courseYaml, setCourseYaml] = useState("");
+  const [courseModel, setCourseModel] = useState<CourseModel | null>(null);
   const [lastError, setLastError] = useState(null);
   const [mdState, dispatchMarkdown] = useReducer(currentMarkdownReducer, INITIAL_STATE);
 
@@ -32,7 +33,8 @@ function App() {
       try {
         const res = await fetch(courseUrl, { signal: abortController.signal });
         const yaml = await res.text();
-        setCourseYaml(yaml);
+        const courseModel = new CourseModel(yaml);
+        setCourseModel(courseModel);
         setLastError(null);
       } catch(err: any) {
         setLastError(err.message)
@@ -75,7 +77,7 @@ function App() {
         { lastError && <span id="error">Error: {lastError}</span>}
       </header>
       <main className='split-screen'>
-        <Course courseYaml={courseYaml} />
+        { courseModel && <Course courseModel={courseModel} /> }
         <div id="markdown-container">
           { mdState.currentMarkdown && 
             <div className='right-align'>

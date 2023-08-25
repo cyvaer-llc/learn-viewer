@@ -4,13 +4,11 @@ import Section from './section';
 import './course.css';
 
 type CourseProps = {
-  courseYaml: string
+  courseModel: CourseModel
 }
 
 export default function Course(props: CourseProps) {
-  const { courseYaml } = props;
-
-  const courseModel = new CourseModel(courseYaml);
+  const { courseModel } = props;
 
   return (
     <nav>
