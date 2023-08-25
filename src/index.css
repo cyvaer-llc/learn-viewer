@@ -14,12 +14,32 @@ h3 {
 
 body {
 	font-family: Helvetica, Arial, sans-serif;
+	font-size: 1.2rem;
 	/* font-weight: 500; */
+}
+
+summary {
+	margin-bottom: .2em;
 }
 
 pre:has(> code) {
   border-radius: .2em;
 	box-shadow: rgba(0, 0, 0, 0.06) 0px 2px 4px 0px inset;
+}
+
+.subtle-link {
+	font-size: .7em;
+}
+
+a[target="_blank"]::after {
+	content: "";
+  width: .7em;
+  height: .7em;
+  background-image: url(./assets/link-external-16.svg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  display: inline-block;
 }
 
 /* Palette variables */

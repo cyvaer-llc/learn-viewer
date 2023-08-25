@@ -18,10 +18,10 @@ export function Standard(props: StandardProps) {
   };
 
   return (<li>
-    <details onToggle={ detailsToggled }>
+    <details className="bordered" onToggle={ detailsToggled }>
       <summary>
         <div className="__title">
-          <a href={url} target="_blank" rel="noopener noreferrer">{title}</a>
+          {title} <a className="subtle-link" href={url} target="_blank" rel="noopener noreferrer">repo</a>
         </div>
         <div className="desc">{description}</div>
       </summary>

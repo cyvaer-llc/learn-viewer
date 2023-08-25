@@ -1,9 +1,17 @@
 .__title {
-  display: inline-block;
+  display: inline;
 }
 
 .desc {
   display: block;
   font-size: 0.8em;
-  margin-left: 1.1em;
+  margin-top: .2em;
+  border-block: 1px solid #ddd;
+  padding-block: .3em;
+}
+
+.bordered {
+  border: 1px solid #ddd;
+  border-radius: .2em;
+  padding: .5em;
 }

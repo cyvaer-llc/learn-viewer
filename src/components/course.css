@@ -6,6 +6,7 @@
 
 ul:has(li > details) {
   list-style: none;
+  padding-left: 1em;
 }
 
 li:has(details) {

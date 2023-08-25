@@ -47,7 +47,12 @@ export default function Section(props: SectionProps) {
     <li>
       <details onToggle={standardToggled}>
         <summary>
-          <a href={section.repoUrl} target="_blank" rel="noopener noreferrer">{section.name}</a>
+          {section.name}&nbsp;
+          <a
+            className="subtle-link"
+            href={section.repoUrl} target="_blank"
+            rel="noopener noreferrer"
+          >repo</a>
         </summary>
         <ul>
           { loadingStandards && "Loading..." }
