@@ -9,6 +9,7 @@ import { CurrentMarkdownDispatchContext } from './contexts/current-markdown';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
+import rehypeExternalLinks from 'rehype-external-links';
 import remarkCallout from './remark-plugins/remark-callout-plugin';
 import './remark-plugins/remark-callout-plugin.css';
 import { ClearMarkdownAction } from './reducers/markdown-actions';
@@ -77,7 +78,10 @@ function App() {
           { !mdState.currentMarkdown && <>&larr; Please select an item</> }
           <ReactMarkdown
             remarkPlugins={[remarkGfm, remarkCallout]}
-            rehypePlugins={[rehypeRaw]}
+            rehypePlugins={[
+              rehypeRaw,
+              [rehypeExternalLinks, { target: '_blank', rel: ['nofollow', 'noopener', 'noreferrer'] }]
+            ]}
           >
             { mdState.currentMarkdown }
           </ReactMarkdown>
