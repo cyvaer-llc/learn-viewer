@@ -14,24 +14,44 @@ export default function ContentFile(props: ContentFileProps) {
 
   const dispatch = useContext(CurrentMarkdownDispatchContext);
 
+  const stashUidInQueryParams = () => {
+    const params = new URLSearchParams(window.location.search);
+    params.set('content-file-uid', contentFile.uid);
+    history?.pushState({}, '', '?' + params.toString());
+  }
+
   const fetchTitle = async (signal?: AbortSignal) => {
     setTitle(null);
     const newTitle = await contentFile.fetchTitle(signal);
     setTitle(newTitle);
   }
 
+  const fetchMarkdown = async (signal?: AbortSignal) => {
+    const markdown = await contentFile.fetchMarkdown(signal);
+    dispatch?.(new SetMarkdownAction(markdown, contentFile.path));
+    const title = await contentFile.fetchTitle(signal);
+    setTitle(title);
+    stashUidInQueryParams();
+  }
+
   useEffect(() => {
     if (load) {
       const abortCtrl = new AbortController();
-      fetchTitle(abortCtrl.signal);
+
+      const searchParams = new URLSearchParams(window.location.search);
+      if (searchParams.get('content-file-uid') === contentFile.uid) {
+        fetchMarkdown(abortCtrl.signal);
+      } else {
+        fetchTitle(abortCtrl.signal);
+      }
+
       return () => abortCtrl.abort();
     }
   }, [load]);
 
   const selectMarkdown = async (evt: SyntheticEvent<HTMLAnchorElement>) => {
     evt.preventDefault();
-    const markdown = await contentFile.fetchMarkdown();
-    dispatch?.(new SetMarkdownAction(markdown, contentFile.path));
+    fetchMarkdown();
   };
 
   return (

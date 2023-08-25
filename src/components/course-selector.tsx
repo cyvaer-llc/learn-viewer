@@ -10,7 +10,9 @@ export default function CourseSelector(props: CourseSelectorProps) {
   const { course, setCourse } = props;
 
   useEffect(() => {
-    history?.pushState({}, '', `?course=${course}`);
+    const params = new URLSearchParams(window.location.search);
+    params.set("course", course);
+    history?.pushState({}, '', '?' + params.toString());
   }, [course]);
 
   const onChange = (evt: React.ChangeEvent<HTMLInputElement>) => {

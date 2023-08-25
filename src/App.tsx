@@ -50,7 +50,7 @@ function App() {
       console.log("Aborting data load.");
       abort();
     }
-  }, [])
+  }, []);
 
   const onCourseSet = (course: string) => {
     setCourseUrl(course);
@@ -61,6 +61,10 @@ function App() {
   const close = (evt: SyntheticEvent<HTMLButtonElement>) => {
     evt.preventDefault();
     dispatchMarkdown(new ClearMarkdownAction());
+
+    const params = new URLSearchParams(window.location.search);
+    params.delete('content-file-uid');
+    history?.pushState({}, '', '?' + params.toString());
   }
 
   return (

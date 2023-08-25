@@ -13,8 +13,9 @@ We'll use React Markdown because:
 
 ### Remark Configuration
 Things to do or consider:
-- [ ] We may be able to use `transformLinkUri` for relative links?
+- [x] We may be able to use `transformLinkUri` for relative links?
       - Or might need [remark-link-rewrite](https://github.com/rjanjic/remark-link-rewrite)
+      - Started with a custom solution, just to get images loading. HOWEVER, relative links between `.md` files get treated as external links!
 - [ ] Syntax highlighting that detects `language-` prefixed classes on a `code` tag.
       - Maybe [rehype-highlight](https://github.com/rehypejs/rehype-highlight)?
       - Maybe [remark-prism](https://github.com/sergioramos/remark-prism)?
