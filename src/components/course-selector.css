@@ -1,5 +1,35 @@
-#course-selector {
+#course-selector > button {
+  padding: .7em;
+  border-radius: .25em;
+  border: 1px solid darkgray;
+  font-weight: bold;
+}
+
+.course-group {
+
+}
+
+.course-name {
+
+}
+
+.course-url {
+  font-size: 0.7em;
+  color: #777;
+}
+
+.horizontal { 
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.course-url::before {
+  content: "→ ";
+}
+
+.flex-grow {
   flex-grow: 1;
-  border: 0;
-  border-radius: 3em;
 }
