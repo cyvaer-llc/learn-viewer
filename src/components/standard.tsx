@@ -9,7 +9,7 @@ type StandardProps = {
 }
 
 export function Standard(props: StandardProps) {
-  const { standard: { title, description, contentFiles, url } } = props;
+  const { standard: { title, description, contentFiles, url, repoUrl } } = props;
 
   const [loadContent, setLoadContent] = useState(false);
 
@@ -20,9 +20,7 @@ export function Standard(props: StandardProps) {
   return (<li>
     <details className="bordered" onToggle={ detailsToggled }>
       <summary>
-        <div className="__title">
-          {title} <a className="subtle-link" href={url} target="_blank" rel="noopener noreferrer">repo</a>
-        </div>
+        <div className="__title">{title}</div>
         <div className="desc">{description}</div>
       </summary>
       <ul>
