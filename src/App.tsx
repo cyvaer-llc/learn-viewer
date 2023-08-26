@@ -24,7 +24,7 @@ const DEFAULT_COURSE = COURSE_IN_QUERY || 'https://raw.githubusercontent.com/Ada
 
 function App() {
   const [courseUrl, setCourseUrl] = useState(DEFAULT_COURSE);
-  const [courseState, { setCourse: setCourseModel2, setCourseError, setCourseLoading }] = useCourseReducer();
+  const [courseState, { setCourse: setCourseModel, setCourseError, setCourseLoading }] = useCourseReducer();
   const [mdState, dispatchMarkdown] = useReducer(currentMarkdownReducer, INITIAL_STATE);
 
   const loadCourseData = (courseUrl: string): () => void => {
@@ -35,7 +35,7 @@ function App() {
         const res = await fetch(courseUrl, { signal: abortController.signal });
         const yaml = await res.text();
         const courseModel = new CourseModel(yaml);
-        setCourseModel2(courseModel);
+        setCourseModel(courseModel);
       } catch(err: any) {
         setCourseError(err.message)
       }
