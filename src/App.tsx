@@ -3,73 +3,36 @@ import './assets/link-external-16.svg';
 import './App.css';
 import CourseSelector from './components/course-selector';
 import Course from './components/course';
+import Document from './components/document';
 import currentMarkdownReducer, { INITIAL_STATE } from './reducers/current-markdown-reducer';
 import useCourseReducer from './reducers/course-reducer';
-import { CurrentMarkdownDispatchContext } from './contexts/current-markdown';
+import { CurrentMarkdownDispatchContext, CurrentMarkdownStateContext } from './contexts/current-markdown';
 import { CourseSettersContext, CourseStateContext } from './contexts/current-course';
 
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import rehypeRaw from 'rehype-raw';
-import rehypeExternalLinks from 'rehype-external-links';
-import remarkCallout from './remark-plugins/remark-callout-plugin';
-import remarkFixUrls from './remark-plugins/remark-fix-urls-plugin';
-import './remark-plugins/remark-callout-plugin.css';
-import { ClearMarkdownAction } from './reducers/markdown-actions';
-
-function App() {
+export default function App() {
   const [courseState, courseSetters] = useCourseReducer();
-
   const [mdState, dispatchMarkdown] = useReducer(currentMarkdownReducer, INITIAL_STATE);
-
-
-  const close = (evt: SyntheticEvent<HTMLButtonElement>) => {
-    evt.preventDefault();
-    dispatchMarkdown(new ClearMarkdownAction());
-
-    const params = new URLSearchParams(window.location.search);
-    params.delete('content-file-uid');
-    history?.pushState({}, '', '?' + params.toString());
-  }
 
   return (
     <CurrentMarkdownDispatchContext.Provider value={dispatchMarkdown}>
-      <CourseStateContext.Provider value={courseState}>
-        <CourseSettersContext.Provider value={courseSetters}>
-          <header>
-            <h1>Learn Curriculum Viewer</h1>
-            <CourseSelector />
-          </header>
-          <main className='split-screen'>
-            <Course />
-            <div id="markdown-container">
-              { mdState.currentMarkdown && 
-                <div className='right-align'>
-                  <button className='close-btn' onClick={close}>&times;</button>
-                </div> }
-              { !mdState.currentMarkdown && <>&larr; Please select an item</> }
-              <ReactMarkdown
-                remarkPlugins={[
-                  remarkGfm,
-                  remarkCallout,
-                  [remarkFixUrls, { rootUrl: mdState.markdownRootUrl }]
-                ]}
-                rehypePlugins={[
-                  rehypeRaw,
-                  [rehypeExternalLinks, { target: '_blank', rel: ['nofollow', 'noopener', 'noreferrer'] }]
-                ]}
-              >
-                { mdState.currentMarkdown }
-              </ReactMarkdown>
-            </div>
-          </main>
-          <footer>
-            &copy;2023 Cyvaer
-          </footer>
-        </CourseSettersContext.Provider>
-      </CourseStateContext.Provider>
+      <CourseSettersContext.Provider value={courseSetters}>
+        <CurrentMarkdownStateContext.Provider value={mdState}>
+          <CourseStateContext.Provider value={courseState}>
+            <header>
+              <h1>Learn Curriculum Viewer</h1>
+              <CourseSelector />
+            </header>
+            <main className='split-screen'>
+              <Course />
+              <Document />
+            </main>
+            <footer>
+              &copy;2023 Cyvaer
+            </footer>
+          </CourseStateContext.Provider>
+        </CurrentMarkdownStateContext.Provider>
+      </CourseSettersContext.Provider>
     </CurrentMarkdownDispatchContext.Provider>
   )
 }
 
-export default App
