@@ -3,6 +3,7 @@ import './course-selector.css';
 import Combobox from 'react-widgets/Combobox';
 import { CourseSettersContext, CourseStateContext } from '../contexts/current-course';
 import { CourseModel } from '../models/course';
+import { GithubUrl } from '../models/github-url';
 
 type CourseSelectorProps = {
 }
@@ -26,7 +27,7 @@ const KNOWN_COURSE_URLS: [string, string][] = [
   ['Ada C15 "Paper" Classroom', 'https://raw.githubusercontent.com/Ada-Developers-Academy/core/main/c15/paper/course.yaml'],
   ['Ada C15 "Rock" Classroom', 'https://raw.githubusercontent.com/Ada-Developers-Academy/core/main/c15/rock/course.yaml'],
   ['Ada C15 "Scissors" Classroom', 'https://raw.githubusercontent.com/Ada-Developers-Academy/core/main/c15/scissors/course.yaml'],
-  ['Sandbox', 'https://raw.githubusercontent.com/Ada-Developers-Academy/core/main/sandbox/course.yaml'],
+  ['Sandbox', 'https://github.com/Ada-Developers-Academy/core/blob/main/sandbox/course.yaml'], // Using the non-raw URL tests that we're handling those correctly.
   ['Ada Core Curriculum (Sandbox)', 'https://raw.githubusercontent.com/Ada-Developers-Academy/core/main/core-sandbox/course.yaml'],
   ['Ada Instructor Onboarding', 'https://raw.githubusercontent.com/Ada-Developers-Academy/core/main/onboarding/course.yaml']
 ];
@@ -43,7 +44,8 @@ export default function CourseSelector(_props: CourseSelectorProps) {
     const goFetch = async () => {
       setCourseLoading();
       try {
-        const res = await fetch(courseUrl, { signal: abortController.signal });
+        const courseGhUrl = new GithubUrl(courseUrl);
+        const res = await fetch(courseGhUrl.courseYamlUrl(), { signal: abortController.signal });
         const yaml = await res.text();
         const courseModel = new CourseModel(yaml);
         setCourseModel(courseModel);
@@ -108,7 +110,7 @@ export default function CourseSelector(_props: CourseSelectorProps) {
         renderListItem={({ item }) => (
           <div className='course-group'>
             <div className='course-name'>{item[0]}</div>
-            <div className='course-url'>{item[1]}</div>
+            <div className='course-url'>{ new GithubUrl(item[1]).githubUrl() }</div>
           </div>
         )}
         busy={ courseState.loading }
