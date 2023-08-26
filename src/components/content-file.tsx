@@ -55,6 +55,7 @@ export default function ContentFile(props: ContentFileProps) {
   const selectMarkdown = async (evt: SyntheticEvent<HTMLAnchorElement>) => {
     evt.preventDefault();
     fetchMarkdown();
+    window?.scrollTo({ top: 0 });
   };
 
   return (
