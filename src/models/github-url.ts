@@ -9,6 +9,9 @@ export class GithubUrl {
   private static GITHUB_PATH_REGEX = /^\/(?<owner>[-\w]+)\/(?<repo>[-\w]+)(\/|\/(blob|tree)\/(?<branch>[-\w]+)\/?(?<path>.*))?$/;
   private static RAW_PATH_REGEX = /^\/(?<owner>[-\w]+)\/(?<repo>[-\w]+)\/(?<branch>[-\w]+)(\/?(?<path>.*))$/;
 
+  private static ROOT_GITHUB = 'https://github.com';
+  private static ROOT_RAW = 'https://raw.githubusercontent.com';
+
   constructor(urlStr: string) {
     this.url = new URL(urlStr);
 
@@ -27,6 +30,9 @@ export class GithubUrl {
     this.repo = matches?.groups?.repo || '';
     this.branch = matches?.groups?.branch || 'main';
     this.path = matches?.groups?.path || '';
+    if (!this.path.startsWith('/')) {
+      this.path = `/${this.path}`;
+    }
   }
 
   isGithubUrl(): boolean {
@@ -41,48 +47,15 @@ export class GithubUrl {
     // If it's the path to a github repo only, make it be a path to the raw course.yaml file.
     // If it's a path to a file, transform into a raw path to that file.
 
-    const url = new URL(this.url.toString());
-
-    const branchRegex = /\/blob\/(.*)\//;
-    const branchMatch = url.pathname.match(branchRegex);
-    const branchFromUrl = branchMatch ? branchMatch[1] : 'main';
-
-    if (url.pathname.includes('blob/')) {
-      url.pathname = url.pathname.replace(/blob\//, '');
-    } else {            
-      url.pathname = url.pathname.replace(/\/$/, '');
-      url.pathname += `/blob/${branchFromUrl}/course.yaml`;
-    }
-
+    const url = new URL(GithubUrl.ROOT_RAW);
+    const path = this.path.endsWith('course.yaml') ? this.path : this.path.endsWith('/') ? `${this.path}course.yaml` : `${this.path}/course.yaml`;
+    url.pathname = `/${this.owner}/${this.repo}/${this.branch}${path}`;
     return url.toString();
   }
-}
 
-export const isGithubUrl = (url: string): boolean => {
-  const urlobj = new URL(url);
-  return urlobj.hostname === 'github.com';
-};
-
-export const isGithubRawUrl = (url: string): boolean => {
-  const urlobj = new URL(url);
-  return urlobj.hostname === 'raw.githubusercontent.com';
-};
-
-export const asGithubRawUrl = (url: string, branch: string = 'main'): string => {
-  if (!isGithubUrl(url)) throw new Error(`Not a github url: ${url}`);
-
-  const urlobj = new URL(url);
-  urlobj.hostname = 'raw.githubusercontent.com';
-
-
-
-  const branchRegex = /\/blob\/(.*)\//;
-  const branchMatch = urlobj.pathname.match(branchRegex);
-  const branchFromUrl = branchMatch ? branchMatch[1] : branch;
-
-  if (urlobj.pathname.includes('/blob/')) {
-    urlobj.pathname = urlobj.pathname.replace(/\/blob\//, '');
+  githubUrl(): string {
+    const url = new URL(GithubUrl.ROOT_GITHUB);
+    url.pathname = `/${this.owner}/${this.repo}/blob/${this.branch}${this.path}`;
+    return url.toString();
   }
-
-  return urlobj.toString();
 }
