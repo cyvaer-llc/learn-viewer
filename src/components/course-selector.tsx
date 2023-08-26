@@ -33,7 +33,7 @@ const KNOWN_COURSE_URLS: [string, string][] = [
 
 const DEFAULT_COURSE = courseFromQuery() || KNOWN_COURSE_URLS[0][1];
 
-export default function CourseSelector(props: CourseSelectorProps) {
+export default function CourseSelector(_props: CourseSelectorProps) {
   const [ course, setCourse ] = useState(DEFAULT_COURSE);
   console.log(course, DEFAULT_COURSE);
   const { setCourseLoading, setCourse: setCourseModel, setCourseError } = useContext(CourseSettersContext)!;

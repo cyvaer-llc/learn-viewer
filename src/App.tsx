@@ -1,4 +1,4 @@
-import { SyntheticEvent, useReducer } from 'react';
+import { useReducer } from 'react';
 import './assets/link-external-16.svg';
 import './App.css';
 import CourseSelector from './components/course-selector';

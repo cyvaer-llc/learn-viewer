@@ -7,7 +7,7 @@ import { CourseStateContext } from '../contexts/current-course';
 type CourseProps = {
 }
 
-export default function Course(props: CourseProps) {
+export default function Course(_props: CourseProps) {
   const { course: courseModel, loading, error } = useContext(CourseStateContext)!;
 
   if (error) {
