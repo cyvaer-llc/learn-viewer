@@ -41,9 +41,7 @@ function App() {
             <CourseSelector />
           </header>
           <main className='split-screen'>
-            { !courseState.loading && courseState.course && <Course courseModel={courseState.course} /> }
-            { courseState.loading && <div className='loading'>Loading...</div> }
-            { courseState.error && <div id='error'>Error Loading Course: {courseState.error}</div> }
+            <Course />
             <div id="markdown-container">
               { mdState.currentMarkdown && 
                 <div className='right-align'>
