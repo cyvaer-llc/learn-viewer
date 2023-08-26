@@ -2,6 +2,7 @@ import { SyntheticEvent, useContext, useEffect, useState } from "react";
 import { ContentFileModel } from "../models/content-file";
 import { CurrentMarkdownDispatchContext } from "../contexts/current-markdown";
 import { SetMarkdownAction } from '../reducers/markdown-actions';
+import { GithubUrl } from "../models/github-url";
 
 type ContentFileProps = {
   contentFile: ContentFileModel,
@@ -11,6 +12,8 @@ type ContentFileProps = {
 export default function ContentFile(props: ContentFileProps) {
   const { contentFile, load } = props;
   const [title, setTitle] = useState<string | null>(null);
+
+  const ghUrl = new GithubUrl(contentFile.path).githubUrl();
 
   const dispatch = useContext(CurrentMarkdownDispatchContext);
 
@@ -58,7 +61,15 @@ export default function ContentFile(props: ContentFileProps) {
     <li key={contentFile.path}>
       {
         load && title !== null ?
-          <>{contentFile.type}: <a href="#" onClick={ selectMarkdown }>{title!}</a></> :
+          <>
+            {contentFile.type}:&nbsp;
+            <a href="#" onClick={ selectMarkdown }>{title!}</a>
+            &nbsp;<a
+              className="subtle-link"
+              href={ghUrl} target="_blank"
+              rel="noopener noreferrer"
+            >repo</a>
+          </> :
           "Loading..."
       }
     </li>
