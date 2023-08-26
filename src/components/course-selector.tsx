@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './course-selector.css';
 import Combobox from 'react-widgets/Combobox';
+import { CourseSettersContext } from '../contexts/current-course';
+import { CourseModel } from '../models/course';
 
 type CourseSelectorProps = {
-  course: string,
-  setCourse: (newCourse: string) => void
 }
 
 const courseFromQuery = () => new URL(window?.location.href).searchParams.get('course');
@@ -34,7 +34,36 @@ const KNOWN_COURSE_URLS: [string, string][] = [
 const DEFAULT_COURSE = courseFromQuery() || KNOWN_COURSE_URLS[0][1];
 
 export default function CourseSelector(props: CourseSelectorProps) {
-  const { course, setCourse } = props;
+  const [ course, setCourse ] = useState(DEFAULT_COURSE);
+  console.log(course, DEFAULT_COURSE);
+  const { setCourseLoading, setCourse: setCourseModel, setCourseError } = useContext(CourseSettersContext)!;
+
+  const loadCourseData = (courseUrl: string): () => void => {
+    const abortController = new AbortController();
+    const goFetch = async () => {
+      setCourseLoading();
+      try {
+        const res = await fetch(courseUrl, { signal: abortController.signal });
+        const yaml = await res.text();
+        const courseModel = new CourseModel(yaml);
+        setCourseModel(courseModel);
+      } catch(err: any) {
+        setCourseError(err.message)
+      }
+    };
+
+    goFetch();
+    return () => abortController.abort();
+  }
+
+  useEffect(() => {
+    const abort = loadCourseData(course);
+
+    return () => {
+      console.log("Aborting data load.");
+      abort();
+    }
+  }, []);
 
   const [selected, setSelected] = useState<[string, string] | string>(DEFAULT_COURSE);
   const [data, setData] = useState<[string, string][]>(KNOWN_COURSE_URLS);
@@ -62,6 +91,7 @@ export default function CourseSelector(props: CourseSelectorProps) {
   const onComboSelect = (val: [string, string] | string) => {
     const courseUrl = Array.isArray(val) ? val[1] : val;
     setCourse(courseUrl);
+    loadCourseData(courseUrl);
   };
   
   return (
