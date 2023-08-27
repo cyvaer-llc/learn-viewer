@@ -1,107 +1,38 @@
-import { SyntheticEvent, useEffect, useReducer, useState } from 'react';
+import { useReducer } from 'react';
 import './assets/link-external-16.svg';
 import './App.css';
 import CourseSelector from './components/course-selector';
 import Course from './components/course';
+import Document from './components/document';
 import currentMarkdownReducer, { INITIAL_STATE } from './reducers/current-markdown-reducer';
-import { CurrentMarkdownDispatchContext } from './contexts/current-markdown';
+import useCourseReducer from './reducers/course-reducer';
+import { CurrentMarkdownDispatchContext, CurrentMarkdownStateContext } from './contexts/current-markdown';
+import { CourseSettersContext, CourseStateContext } from './contexts/current-course';
 
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import rehypeRaw from 'rehype-raw';
-import rehypeExternalLinks from 'rehype-external-links';
-import remarkCallout from './remark-plugins/remark-callout-plugin';
-import remarkFixUrls from './remark-plugins/remark-fix-urls-plugin';
-import './remark-plugins/remark-callout-plugin.css';
-import { ClearMarkdownAction } from './reducers/markdown-actions';
-
-const COURSE_IN_QUERY = new URL(window?.location.href).searchParams.get('course');
-const DEFAULT_COURSE = COURSE_IN_QUERY || 'https://raw.githubusercontent.com/Ada-Developers-Academy/core/main/c19/seattle/course.yaml';
-// Some other courses tried:
-// https://raw.githubusercontent.com/gSchool/ada-pre-course/master/course.yaml
-
-function App() {
-  const [courseUrl, setCourseUrl] = useState(DEFAULT_COURSE);
-  const [courseYaml, setCourseYaml] = useState("");
-  const [lastError, setLastError] = useState(null);
+export default function App() {
+  const [courseState, courseSetters] = useCourseReducer();
   const [mdState, dispatchMarkdown] = useReducer(currentMarkdownReducer, INITIAL_STATE);
-
-  const loadCourseData = (courseUrl: string): () => void => {
-    const abortController = new AbortController();
-    const goFetch = async () => {
-      try {
-        const res = await fetch(courseUrl, { signal: abortController.signal });
-        const yaml = await res.text();
-        setCourseYaml(yaml);
-        setLastError(null);
-      } catch(err: any) {
-        setLastError(err.message)
-      }
-    };
-
-    goFetch();
-    return () => abortController.abort();
-  }
-
-  useEffect(() => {
-    const abort = loadCourseData(courseUrl);
-
-    return () => {
-      console.log("Aborting data load.");
-      abort();
-    }
-  }, []);
-
-  const onCourseSet = (course: string) => {
-    setCourseUrl(course);
-    loadCourseData(course);
-    setLastError(null);
-  }
-
-  const close = (evt: SyntheticEvent<HTMLButtonElement>) => {
-    evt.preventDefault();
-    dispatchMarkdown(new ClearMarkdownAction());
-
-    const params = new URLSearchParams(window.location.search);
-    params.delete('content-file-uid');
-    history?.pushState({}, '', '?' + params.toString());
-  }
 
   return (
     <CurrentMarkdownDispatchContext.Provider value={dispatchMarkdown}>
-      <header>
-        <h1>Learn Curriculum Viewer</h1>
-        <CourseSelector course={courseUrl} setCourse={onCourseSet} />
-        { lastError && <span id="error">Error: {lastError}</span>}
-      </header>
-      <main className='split-screen'>
-        <Course courseYaml={courseYaml} />
-        <div id="markdown-container">
-          { mdState.currentMarkdown && 
-            <div className='right-align'>
-              <button className='close-btn' onClick={close}>&times;</button>
-            </div> }
-          { !mdState.currentMarkdown && <>&larr; Please select an item</> }
-          <ReactMarkdown
-            remarkPlugins={[
-              remarkGfm,
-              remarkCallout,
-              [remarkFixUrls, { rootUrl: mdState.markdownRootUrl }]
-            ]}
-            rehypePlugins={[
-              rehypeRaw,
-              [rehypeExternalLinks, { target: '_blank', rel: ['nofollow', 'noopener', 'noreferrer'] }]
-            ]}
-          >
-            { mdState.currentMarkdown }
-          </ReactMarkdown>
-        </div>
-      </main>
-      <footer>
-        &copy;2023 Cyvaer
-      </footer>
+      <CourseSettersContext.Provider value={courseSetters}>
+        <CurrentMarkdownStateContext.Provider value={mdState}>
+          <CourseStateContext.Provider value={courseState}>
+            <header>
+              <h1>Learn Curriculum Viewer</h1>
+              <CourseSelector />
+            </header>
+            <main className='split-screen'>
+              <Course />
+              <Document />
+            </main>
+            <footer>
+              &copy;2023 Cyvaer
+            </footer>
+          </CourseStateContext.Provider>
+        </CurrentMarkdownStateContext.Provider>
+      </CourseSettersContext.Provider>
     </CurrentMarkdownDispatchContext.Provider>
   )
 }
 
-export default App
