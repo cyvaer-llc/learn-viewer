@@ -4,7 +4,7 @@ import type { Node, Parent } from 'unist';
 import type { Root, Heading, Text } from 'mdast';
 
 const visitor: Visitor<Node> = (node: Node, index: number | null, parent: Parent | null): VisitorResult => {
-  if (parent === null || index === null) return SKIP;
+  if (parent === null || index === null) return;
 
   if (node.type === 'heading') {
     const headingNode = node as Heading;
@@ -33,7 +33,7 @@ const visitor: Visitor<Node> = (node: Node, index: number | null, parent: Parent
 
       // Replace the start node with the callout node.
       parent.children.splice(index, 1, calloutNode);
-      return [SKIP, index];
+      return [SKIP, index + 1];
     }
   }
 };
