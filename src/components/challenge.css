@@ -1,0 +1,43 @@
+.challenge {
+  /* padding: 1em; */
+  border-radius: .4em;
+  border: 1px solid #f0f0f0;
+  box-shadow: rgba(0, 0, 0, 0.04) 0px 3px 5px;
+  margin-block: 2em;
+  position: relative;
+}
+
+.challenge > * {
+  margin-inline: 1rem;
+}
+
+.challenge > h2 {
+  padding-bottom: .5em;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.challenge > .badge {
+  position: absolute;
+  top: -1em;
+  left: 1em;
+  font-size: .7em;
+  padding: .5em;
+  border-radius: .3em;
+  background-color: darkslateblue;
+  color: white;
+}
+
+.id-block {
+  font-size: .8em;
+  font-style: italic;
+  font-weight: 100;
+}
+
+.strike {
+  text-decoration: line-through;
+}
+
+.unsupported {
+  color: #c22;
+  margin-block: 1em;
+}
