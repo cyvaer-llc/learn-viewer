@@ -7,6 +7,7 @@ export type ChallengeInfo = {
   id: string,
   title: string,
   challengeType: string,
+  topics?: string[],
   options?: any,
   answer?: any
 };
