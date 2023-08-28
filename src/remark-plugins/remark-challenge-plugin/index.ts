@@ -1,16 +1,10 @@
 import { visit, SKIP, type Visitor, type VisitorResult } from 'unist-util-visit';
 import type { Transformer } from 'unified';
 import type { Node, Parent } from 'unist';
-import type { Root, Heading, Text, List, ListItem, Paragraph } from 'mdast';
+import type { Root, Heading, Text, } from 'mdast';
+import { extractInfoNode, type ChallengeInfo } from './md-to-js-parse';
 
-export type ChallengeInfo = {
-  id: string,
-  title: string,
-  challengeType: string,
-  topics?: string[],
-  options?: any,
-  answer?: any
-};
+export type { ChallengeInfo };
 
 const visitor: Visitor<Node> = (node: Node, index: number | null, parent: Parent | null): VisitorResult => {
   if (parent === null || index === null) return SKIP;
@@ -113,7 +107,7 @@ const [isChallengeStart, isChallengeEnd] = tagPair(3, 'challenge');
 // const [isQuestionStart, isQuestionEnd] = tagPair(5, 'question');
 // const [isAnswerStart, isAnswerEnd] = tagPair(5, 'answer');
 
-function isTag(node: Node, depth: number, tagName: string): boolean {
+function isTag(node: Node, _depth: number, tagName: string): boolean {
   if (node.type !== 'heading') {
     return false;
   }
@@ -133,27 +127,10 @@ function isEndTag(node: Node, depth: number, tagName: string): boolean {
   return isTag(node, depth, `end-${tagName}`);
 }
 
-/**
- * Finds the node with the info group, removes it, and returns an object with
- * that info.
- * @param nodes 
- * @returns a ChallengeInfo (id, title, and challengeType)
- */
-function extractInfoNode(nodes: Node[]) : ChallengeInfo {
-  if (nodes.length < 1 || nodes[0].type !== 'list') {
-    throw new Error('First node in a challenge must be a list');
-  }
 
-  const infoList = nodes[0] as List;
-  nodes.splice(0, 1); // Remove the info list from the nodes
-
-  const infoItems = infoList.children;
-  const info = Object.fromEntries(infoItems.map(getKeyValue));
-  return info as ChallengeInfo;
-}
 
 const extractQuestion = (nodes: Node[]) => extractTag(nodes, 'question');
-const extractChallenge = (nodes: Node[]) => extractTag(nodes, 'challenge');
+// const extractChallenge = (nodes: Node[]) => extractTag(nodes, 'challenge');
 const extractOptions = (nodes: Node[]) => extractTag(nodes, 'options');
 const extractAnswer = (nodes: Node[]) => extractTag(nodes, 'answer');
 
@@ -176,66 +153,6 @@ function extractTag(nodes: Node[], tagName: string): Node[] {
   }
 
   return nodes.slice(startIdx + 1, endIdx);
-}
-
-// function extractList(nodes: Node[]): string[] {
-//   if (nodes.length !== 1 ||
-//       nodes[0].type !== 'list')
-//   {
-//     throw new Error('Expected to extract a list');
-//   }
-
-//   const list = nodes[0] as List;
-//   return list.children.map(getListItemText);
-// }
-
-// function extractText(nodes: Node[]): string {
-//   if (nodes.length !== 1 ||
-//       nodes[0].type !== 'paragraph')
-//   {
-//     throw new Error('Expected to extract a paragraph with a single text node');
-//   }
-
-//   const paragraph = nodes[0] as Paragraph;
-//   if (paragraph.children.length !== 1 ||
-//       paragraph.children[0].type !== 'text')
-//   {
-//     throw new Error('Expected to extract a paragraph with a single text node');
-//   }
-//   return nodes.map(node => node.value).join(''); 
-// }
-
-function getListItemText(listItem: ListItem): string {
-  // The listItem should have a single paragraph with a single text node
-  if (listItem.children.length !== 1 ||
-    listItem.children[0].type !== 'paragraph' ||
-    listItem.children[0].children.length !== 1 ||
-    listItem.children[0].children[0].type !== 'text')
-  {
-    throw new Error('Challenge info list items should have a single paragraph with a single text node');
-  }
-
-  const textNode = listItem.children[0].children[0] as Text;
-  const text = textNode.value;
-  return text;
-}
-
-function getKeyValue(listItem: ListItem): [string, string] {
-  // The listItem should have a single paragraph with a single text node
-  if (listItem.children.length !== 1 ||
-      listItem.children[0].type !== 'paragraph' ||
-      listItem.children[0].children.length !== 1 ||
-      listItem.children[0].children[0].type !== 'text') {
-    throw new Error('Challenge info list items should have a single paragraph with a single text node');
-  }
-
-  const textNode = listItem.children[0].children[0] as Text;
-  const text = textNode.value;
-  const [key, value] = text.split(': ');
-
-  // `type` is in the list, but we're calling it `challengeType` in the info object.
-  const adjustedKey = key === 'type' ? 'challengeType' : key;
-  return [adjustedKey, value];
 }
 
 /**
