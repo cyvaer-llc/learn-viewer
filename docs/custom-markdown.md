@@ -56,18 +56,21 @@ Here's an example HTML representation of the AST that the plugin should send to 
 
 ```html
 <section challengeType='tasklist' id='amx159q' title='Example Task List' options='[amx159q0, amx159q1, amx159q2]'>
-  <div className='tasklist-item'>
-    <input id='amx159q0' type='checkbox'>
-    <label htmlFor='amx159q0'>First task</label>
+  <div className='question-options'>
+    <div className='tasklist-item'>
+      <input id='amx159q0' type='checkbox'>
+      <label htmlFor='amx159q0'>First task</label>
+    </div>
+    <div className='tasklist-item'>
+      <input id='amx159q1' type='checkbox'>
+      <label htmlFor='amx159q1'>Second task <strong>with emphasis</strong></label>
+    </div>
+    <div className='tasklist-item'>
+      <input id='amx159q2' type='checkbox'>
+      <label htmlFor='amx159q2'>Third task</label>
+    </div>
   </div>
-  <div className='tasklist-item'>
-    <input id='amx159q1' type='checkbox'>
-    <label htmlFor='amx159q1'>Second task <strong>with emphasis</strong></label>
-  </div>
-  <div className='tasklist-item'>
-    <input id='amx159q2' type='checkbox'>
-    <label htmlFor='amx159q2'>Third task</label>
-  </div>
+</section>
 ```
 
 Basically, each `ListItem` needs to be turned into a div with an input checkbox and a label

@@ -3,6 +3,7 @@ import type { Transformer } from 'unified';
 import type { Node, Parent } from 'unist';
 import type { Root, Heading, Text, } from 'mdast';
 import { extractInfoNode, type ChallengeInfo } from './md-to-js-parse';
+import { extractOptionsNodesAndData } from './make-option';
 
 export type { ChallengeInfo };
 
@@ -21,14 +22,17 @@ const visitor: Visitor<Node> = (node: Node, index: number | null, parent: Parent
       const childrenBetween = parent.children.splice(index + 1, closingNodeIdx - index).slice(0, -1);
 
       // These properties will be provided to whatever React component handles the `section` tag.
-      const hProperties: ChallengeInfo = extractInfoNode(childrenBetween);
+      const challengeInfo: ChallengeInfo = extractInfoNode(childrenBetween);
       const options = extractOptions(childrenBetween);
-      const answer = extractAnswer(childrenBetween);
-      hProperties.options = options;
-      hProperties.answer = answer;
+
+      // TODO: Extract answer data
+      // const answer = extractAnswer(childrenBetween);
+      // challengeInfo.answer = answer;
 
       // The question becomes the new children of the challenge node.
       const question = extractQuestion(childrenBetween);
+      const [optionsRoot, optionsData] = extractOptionsNodesAndData(options, challengeInfo.id);
+      challengeInfo.options = optionsData;
 
       const questionNode = {
         type: 'element',
@@ -38,53 +42,11 @@ const visitor: Visitor<Node> = (node: Node, index: number | null, parent: Parent
         children: question
       };
 
-      let id = 0;
-      const makeCheckbox = (option: Node) => {
-        const check = {
-          type: 'element',
-          data: {
-            hName: 'input',
-            hProperties: {
-              tpye: 'checkbox',
-              id: `option-${id}`,
-              name: `option-${id}`,
-            }
-          }
-        };
-        const label = {
-          type: 'element',
-          data: {
-            hName: 'label',
-          },
-          children: [option]
-        };
-        const res = {
-          type: 'element',
-          data: {
-            hName: 'div',
-          },
-          children: [check, label]
-        };
-        id++;
-        return res;
-      };
-
-      const optionsRoot = {
-        type: 'element',
-        data: {
-          hName: 'div',
-          hProperties: {
-            className: 'question-options'
-          }
-        },
-        children: options.map(makeCheckbox)
-      };
-
       const challengeNode = {
         type: 'challenge',
         data: {
           hName: 'section',
-          hProperties
+          hProperties: challengeInfo,
         },
         children: [questionNode, optionsRoot]
       };
@@ -135,7 +97,7 @@ const extractOptions = (nodes: Node[]) => extractTag(nodes, 'options');
 const extractAnswer = (nodes: Node[]) => extractTag(nodes, 'answer');
 
 function extractTag(nodes: Node[], tagName: string): Node[] {
-  const [isStart, isEnd] = tagPair(-1, tagName);
+  const [isStart, isEnd] = tagPair(-1 /*TODO: don't need this param?*/, tagName);
 
   const startIdx = nodes.findIndex(isStart);
   if (startIdx === -1) {
@@ -152,7 +114,9 @@ function extractTag(nodes: Node[], tagName: string): Node[] {
     throw new Error('End tag found before start tag');
   }
 
-  return nodes.slice(startIdx + 1, endIdx);
+  // Remove the found nodes, leaving the start tag but removing the end,
+  // and return the nodes between the start and end tags.
+  return nodes.splice(startIdx + 1, endIdx - startIdx).slice(0, -1);
 }
 
 /**

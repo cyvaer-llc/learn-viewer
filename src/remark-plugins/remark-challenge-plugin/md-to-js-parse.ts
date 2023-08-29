@@ -10,7 +10,7 @@ export type ChallengeInfo = {
   title: string,
   challengeType: string,
   topics?: string[],
-  options?: any,
+  options?: string[] | string, // remark turns the array into a space-separated string
   answer?: any
 };
 

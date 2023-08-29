@@ -53,7 +53,6 @@ export default function Document() {
           ]}
           components={{
             section({ node, ...props }: any) {
-              console.log(props);
               // If the section has a `challengeType` property, then use our React component to render it.
               return props?.challengeType ? (
                 <Challenge {...props} />

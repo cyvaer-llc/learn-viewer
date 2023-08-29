@@ -1,0 +1,33 @@
+.tasklist-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  border: 1px solid #ccc;
+  margin: 0.5em;
+  gap: 0.5em;
+  padding-left: 0.5em;
+  border-radius: 0.3em;
+}
+
+.tasklist-item:hover {
+  border-color: #aaa;
+  background-color: rgb(235, 246, 253);
+}
+
+.tasklist-item > input[type='checkbox'] {
+  width: 1.5em;
+  height: 1.5em;
+}
+
+.tasklist-item > label {
+  flex-grow: 1;
+}
+
+.tasklist-item:has(input:checked) {
+  background-color: rgb(190, 224, 245);
+}
+
+.tasklist-item:has(input:checked) > label {
+  text-decoration: line-through;
+}
