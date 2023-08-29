@@ -34,6 +34,10 @@ export function extractOptionsNodesAndData(optionsBlock: Node[], challengeId: st
 }
 
 function getList(nodes: Node[]): ListItem[] {
+  if (nodes.length === 0) {
+    return [];
+  }
+
   if (nodes.length !== 1 || nodes[0].type !== 'list') {
     throw new Error('Expected a single list');
   }
