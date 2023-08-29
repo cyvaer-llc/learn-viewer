@@ -94,7 +94,7 @@ function isEndTag(node: Node, depth: number, tagName: string): boolean {
 const extractQuestion = (nodes: Node[]) => extractTag(nodes, 'question');
 // const extractChallenge = (nodes: Node[]) => extractTag(nodes, 'challenge');
 const extractOptions = (nodes: Node[]) => extractTag(nodes, 'options');
-const extractAnswer = (nodes: Node[]) => extractTag(nodes, 'answer');
+// const extractAnswer = (nodes: Node[]) => extractTag(nodes, 'answer');
 
 function extractTag(nodes: Node[], tagName: string): Node[] {
   const [isStart, isEnd] = tagPair(-1 /*TODO: don't need this param?*/, tagName);

@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useContext, useReducer } from 'react';
+import React, { SyntheticEvent, useContext } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
