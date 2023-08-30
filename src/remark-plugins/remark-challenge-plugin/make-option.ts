@@ -1,13 +1,13 @@
 import { Node } from 'unist';
 import { List, ListItem, Paragraph } from 'mdast';
 
-type InsertedNode = {
+type GeneratedNode = {
   type: string,
   data: {
     hName: string,
     hProperties?: any
   },
-  children?: (InsertedNode | Node)[]
+  children?: (GeneratedNode | Node)[]
 }
 
 const optionId = (challengeId: string, optionNumber: number) => `${challengeId}-option-${optionNumber}`;
@@ -18,7 +18,7 @@ const optionId = (challengeId: string, optionNumber: number) => `${challengeId}-
  * @param Node[]: optionsBlock 
  * @returns The root node of the options tree, and the list of ids of the checkboxes (the data).
  */
-export function extractOptionsNodesAndData(optionsBlock: Node[], challengeId: string): [InsertedNode, string[]] {
+export function extractOptionsNodesAndData(optionsBlock: Node[], challengeId: string): [GeneratedNode, string[]] {
   // Take a List and get its list items, then turn those into checkboxes.
   const optionsList = getList(optionsBlock);
   
@@ -78,7 +78,7 @@ function unList(node: Node): Paragraph {
   return listItem.children[0] as Paragraph;
 }
 
-function makeHastNode(tag: string, hProperties: any, children: (InsertedNode | Node)[] = []): InsertedNode {
+function makeHastNode(tag: string, hProperties: any, children: (GeneratedNode | Node)[] = []): GeneratedNode {
   const res = {
     type: 'element',
     data: {

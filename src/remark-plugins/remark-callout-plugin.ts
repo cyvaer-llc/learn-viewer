@@ -16,6 +16,7 @@ const visitor: Visitor<Node> = (node: Node, index: number | null, parent: Parent
       }
 
       // Extract the children between the start and end nodes, and remove the end node
+      // TODO: This might be a better application for replace-all-between: https://github.com/unicorn-utterances/unist-util-replace-all-between
       const childrenBetween = parent.children.splice(index + 1, closingNodeIdx - index).slice(0, -1);
 
       // Replace the current node with a new callout node that generates

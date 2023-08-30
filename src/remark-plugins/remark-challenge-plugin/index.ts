@@ -26,6 +26,10 @@ const visitor: Visitor<Node> = (node: Node, index: number | null, parent: Parent
       const options = extractOptions(childrenBetween);
 
       // TODO: Extract answer data
+      //       The issue with getting answers is that they need to be correlated with the options so we can
+      //       extract the *option IDs* that correspond to the answers.
+      //       One potential option: Check if the strings are equal (use mdast-util-to-string to get strings)
+      //       2nd option: If options can be duplicates *except* markdown, then maybe use mdast-util-to-markdown
       // const answer = extractAnswer(childrenBetween);
       // challengeInfo.answer = answer;
 

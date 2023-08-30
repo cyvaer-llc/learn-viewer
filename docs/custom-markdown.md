@@ -21,7 +21,7 @@ Challenge structure:
 
 Known types:
 * [ ] code-snippet [requires actually running code?]
-* [ ] checkbox
+* [x] checkbox
 * [ ] multiple-choice
 * [ ] number [only seen in examples]
 * [ ] ordering
@@ -33,6 +33,10 @@ Known types:
 
 ### Parsing challenges
 Each challenge needs to have its markdown presentation preserved since, for example, the question block can contain complex content such as tables. In addition, structural html components need to be generated that are particular to the data. Finally, data that is *not* presentational (such as the correct answers in a multiple-choice challenge) need to be extracted and parsed so that they can be provided to the interactive components that implement them.
+
+#### TODO
+* Consider using [unist-util-assert](https://github.com/syntax-tree/unist-util-assert) for checking that nodes are what we expect before using them.
+
 
 ### tasklist
 The task list challenge type simply presents a question and a list of checkboxes.
