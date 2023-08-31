@@ -41,17 +41,3 @@
   color: #c22;
   margin-block: 1em;
 }
-
-.challenge-success {
-  background-color: lightgreen;
-  color: rgb(0, 49, 0);
-  margin-block: 1rem;
-  margin-inline: 1.5rem;
-  padding: 1rem;
-  border: 1px rgb(62, 205, 62) solid;
-  border-radius: .3rem;
-}
-
-.challenge-success::before {
-  content: "✅ ";
-}

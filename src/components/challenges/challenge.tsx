@@ -1,8 +1,10 @@
 import { useEffect, type ReactNode, useContext, type SyntheticEvent } from "react";
 import { ChallengeDispatchContext, ChallengeStateContext } from "../../contexts/challenge";
 import { ChallengeInfo } from "../../remark-plugins/remark-challenge-plugin";
-import '../remark-plugins/remark-challenge-plugin.css';
+import '../../remark-plugins/remark-challenge-plugin.css';
 import './challenge.css';
+import { type ChallengeState } from "../../reducers/challenge-reducer";
+import AnswerCheck from "./answer-check";
 
 const UNSUPPORTED_CHALLENGE_TYPES = [
   'code-snippet',
@@ -31,8 +33,8 @@ export default function Challenge(props: ChallengeProps) {
   const optsArray = typeof options === 'string' ? options.split(' ') : options || [];
   const answerArray = typeof answer === 'string' ? answer.split(' ') : answer || [];
 
-  const { setPossibilities, setCorrectAnswer, checkAnswer } = useContext(ChallengeDispatchContext) || {};
-  const state = useContext(ChallengeStateContext) || {};
+  const { setPossibilities, setCorrectAnswer } = useContext(ChallengeDispatchContext) || {};
+  const [state] = useContext(ChallengeStateContext) || [{} as ChallengeState];
 
   // Task List:
   // Assume each entry is unique and all possible/selected options match,
@@ -41,21 +43,14 @@ export default function Challenge(props: ChallengeProps) {
   const completed = state?.[id]?.possibleOptions &&
     [...state[id].possibleOptions].every(entry => state?.[id]?.selectedOptions.has(entry));
 
-  // Checkbox or multiple choice:
+  // checkbox and multiple-choice:
   const isAnswerCheckable = ['checkbox', 'multiple-choice'].includes(challengeType);
-  const answerState = state?.[id]?.lastAttempt;
   
   useEffect(() => {
     setPossibilities?.(optsArray);
     setCorrectAnswer?.(answerArray);
-    
-  }, [options]);
+  }, [options, answer]);
 
-  const onCheckClicked = (evt: SyntheticEvent<HTMLButtonElement>) => {
-    evt.preventDefault();
-    checkAnswer?.(id);
-  }
-  
   return (
     <section className="challenge">
       <div className={`badge${!isSupported ? ' strike' : ''}`}>{challengeType}</div>
@@ -65,10 +60,7 @@ export default function Challenge(props: ChallengeProps) {
         { isSupported && children || <div className="unsupported">This challenge type is not supported</div> }
       </section>
       { isTaskList && completed && <div className="challenge-success">All tasks complete!</div> }
-      { isAnswerCheckable && answerState === 'unanswered' && <div>Press "Check" to check your answer.</div>}
-      { isAnswerCheckable && answerState === 'correct' && <div className="challenge-success">Correct!</div> }
-      { isAnswerCheckable && answerState === 'wrong' && <div className="challenge-fail">Not quite! Try again.</div> }
-      { isAnswerCheckable && <button onClick={onCheckClicked}>Check</button>}
+      { isAnswerCheckable && <AnswerCheck challengeId={id} /> }
     </section>
   );
 }

@@ -24,6 +24,10 @@ export type ChallengeAction = {
   }
 };
 
+export type ChallengeSelectors = {
+  isSelected: (optionId: ChallengeOption) => boolean;
+}
+
 export type ChallengeMutators = {
   toggleOption: (optionId: ChallengeOption) => void;
   setPossibilities: (options: ChallengeOption[]) => void;
@@ -159,7 +163,7 @@ function reducer(state: ChallengeState = INITIAL_STATE, action: ChallengeAction)
   }
 }
 
-export function useChallengeReducer(): [ChallengeState, ChallengeMutators] {
+export function useChallengeReducer(): [ChallengeState, ChallengeMutators, ChallengeSelectors] {
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
 
   const mutators = useMemo(() => {
@@ -184,5 +188,16 @@ export function useChallengeReducer(): [ChallengeState, ChallengeMutators] {
     return mutators;
   }, []);
 
-  return [state, mutators];
+  const selectors = useMemo(() => {
+    const selectors: ChallengeSelectors = {
+      isSelected: (optionId: ChallengeOption) => {
+        const challengeId = challengeIdFromOptionId(optionId);
+        const challenge = state[challengeId];
+        return !challenge || !challenge.selectedOptions.has(optionId);
+      }
+    };
+    return selectors;
+  }, [state]);
+
+  return [state, mutators, selectors];
 }

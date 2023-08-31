@@ -13,17 +13,17 @@ import { ClearMarkdownAction } from '../reducers/markdown-actions';
 import { useChallengeReducer } from '../reducers/challenge-reducer';
 import { CurrentMarkdownDispatchContext, CurrentMarkdownStateContext } from '../contexts/current-markdown';
 import { ChallengeStateContext, ChallengeDispatchContext } from '../contexts/challenge';
-import Challenge from './challenge';
-import Checkbox from './checkbox';
+import Challenge from './challenges/challenge';
+import Checkbox from './challenges/checkbox';
 
 // Since options for a Challenge originate in the parsed data, we need to initialize
 // the options for the challenge on component mount. If we don't memoize the Document,
 // we'll get a render loop when the options are initialized.
 export default function DocumentWithCtx() {
-  const [challengeState, challengeMutators] = useChallengeReducer();
+  const [challengeState, challengeMutators, challengeSelectors] = useChallengeReducer();
   return(
     <ChallengeDispatchContext.Provider value={challengeMutators}>
-        <ChallengeStateContext.Provider value={challengeState}>
+        <ChallengeStateContext.Provider value={[challengeState, challengeSelectors]}>
           <MemoizedDocument />
         </ChallengeStateContext.Provider>
     </ChallengeDispatchContext.Provider>
