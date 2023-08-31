@@ -53,11 +53,12 @@ export default function Challenge(props: ChallengeProps) {
 
   return (
     <section className="challenge">
-      <div className={`badge${!isSupported ? ' strike' : ''}`}>{challengeType}</div>
+      <div className={`badge${!isSupported ? ' strike' : ''}`}>challenge ({challengeType})</div>
       <h2>{ title }</h2>
       <section>
         <code className="id-block">ID: {id}</code>
-        { isSupported && children || <div className="unsupported">This challenge type is not supported</div> }
+        { isSupported || <div className="unsupported">Interaction on this challenge type is not currently supported.</div> }
+        { children }
       </section>
       { isTaskList && completed && <div className="challenge-success">All tasks complete!</div> }
       { isAnswerCheckable && <AnswerCheck challengeId={id} /> }

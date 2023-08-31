@@ -31,6 +31,7 @@
   font-size: .8em;
   font-style: italic;
   font-weight: 100;
+  color: #ccc;
 }
 
 .strike {
@@ -40,4 +41,7 @@
 .unsupported {
   color: #c22;
   margin-block: 1em;
+  border: 1px solid #fdd;
+  padding: 1em;
+  font-style: italic;
 }
