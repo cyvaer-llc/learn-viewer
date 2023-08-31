@@ -22,7 +22,7 @@ Challenge structure:
 Known types:
 * [ ] code-snippet [requires actually running code?]
 * [x] checkbox
-* [ ] multiple-choice
+* [x] multiple-choice
 * [ ] number [only seen in examples]
 * [ ] ordering
 * [ ] paragraph
