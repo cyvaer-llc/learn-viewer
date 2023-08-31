@@ -11,7 +11,7 @@ export type ChallengeInfo = {
   challengeType: string,
   topics?: string[],
   options?: string[] | string, // remark turns the array into a space-separated string
-  answer?: any
+  answer?: string[] | string, // remark turns the array into a space-separated string
 };
 
 /**

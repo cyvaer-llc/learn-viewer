@@ -27,7 +27,13 @@ export type ChallengeAction = {
 export type ChallengeMutators = {
   toggleOption: (optionId: ChallengeOption) => void;
   setPossibilities: (options: ChallengeOption[]) => void;
+  setCorrectAnswer: (options: ChallengeOption[]) => void;
   checkAnswer: (challengeId: string) => void;
+}
+
+const challengeIdFromOptionId = (optionId: ChallengeOption): string => {
+  const [challengeId, _] = optionId.split('-option-');  
+  return challengeId;
 }
 
 const set = (options: ChallengeOption[]): ChallengeAction => {
@@ -35,13 +41,32 @@ const set = (options: ChallengeOption[]): ChallengeAction => {
     throw new Error('setPossibilities requires at least one option');
   }
 
-  const [challengeId, _] = options[0].split('-option-');
-  if (options.some(option => option.split('-option-')[0] !== challengeId)) {
+  const challengeId = challengeIdFromOptionId(options[0]);
+  if (options.some(option => challengeIdFromOptionId(option) !== challengeId)) {
     throw new Error('All options must be for the same challenge');
   }
 
   return {
     type: 'SET_POSSIBILITIES',
+    payload: {
+      challengeId,
+      options
+    }
+  };
+}
+
+const setAnswers = (options: ChallengeOption[]): ChallengeAction => {
+  if (options.length < 1) {
+    throw new Error('setAnswers requires at least one option');
+  }
+
+  const challengeId = challengeIdFromOptionId(options[0]);
+  if (options.some(option => challengeIdFromOptionId(option) !== challengeId)) {
+    throw new Error('All answers must be for the same challenge');
+  }
+
+  return {
+    type: 'SET_ANSWERS',
     payload: {
       challengeId,
       options
@@ -101,6 +126,16 @@ function reducer(state: ChallengeState = INITIAL_STATE, action: ChallengeAction)
         }
       };
     }
+    case 'SET_ANSWERS': {
+      const { challengeId, options } = action.payload;
+      return {
+        ...state,
+        [challengeId]: {
+          ...state[challengeId],
+          correctOptions: new Set<ChallengeOption>(options)
+        }
+      }
+    }
     case 'CHECK_ANSWER': {
       const { challengeId } = action.payload;
       const challenge = state[challengeId];
@@ -134,6 +169,13 @@ export function useChallengeReducer(): [ChallengeState, ChallengeMutators] {
       },
       setPossibilities: (options: ChallengeOption[]) => {
         dispatch(set(options));
+      },
+      setCorrectAnswer: (options: ChallengeOption[]) => {
+        if (options?.length < 1) {
+          console.log('No options provided to setCorrectAnswer; skipping');
+          return;
+        }
+        dispatch(setAnswers(options));
       },
       checkAnswer: (challengeId: string) => {
         dispatch(check(challengeId));

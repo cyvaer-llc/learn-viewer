@@ -1,9 +1,10 @@
 import { visit, SKIP, type Visitor, type VisitorResult } from 'unist-util-visit';
+import { toMarkdown } from 'mdast-util-to-markdown';
 import type { Transformer } from 'unified';
 import type { Node, Parent } from 'unist';
-import type { Root, Heading, Text, } from 'mdast';
+import type { Root, Heading, Text, ListItem } from 'mdast';
 import { extractInfoNode, type ChallengeInfo } from './md-to-js-parse';
-import { extractOptionsNodesAndData } from './make-option';
+import { extractOptionsNodesAndData, getList } from './make-option';
 
 export type { ChallengeInfo };
 
@@ -25,18 +26,37 @@ const visitor: Visitor<Node> = (node: Node, index: number | null, parent: Parent
       const challengeInfo: ChallengeInfo = extractInfoNode(childrenBetween);
       const options = extractOptions(childrenBetween);
 
-      // TODO: Extract answer data
-      //       The issue with getting answers is that they need to be correlated with the options so we can
-      //       extract the *option IDs* that correspond to the answers.
-      //       One potential option: Check if the strings are equal (use mdast-util-to-string to get strings)
-      //       2nd option: If options can be duplicates *except* markdown, then maybe use mdast-util-to-markdown
-      // const answer = extractAnswer(childrenBetween);
-      // challengeInfo.answer = answer;
-
       // The question becomes the new children of the challenge node.
       const question = extractQuestion(childrenBetween);
-      const [optionsRoot, optionsData] = extractOptionsNodesAndData(options, challengeInfo.id);
-      challengeInfo.options = optionsData;
+      const [optionsRoot, optionIds, mdToIdMap] = extractOptionsNodesAndData(options, challengeInfo.id);
+      challengeInfo.options = optionIds;
+
+      // Extract answer data (for multiple choice)
+      // The issue with getting answers is that they need to be correlated with the options so we can
+      // extract the *option IDs* that correspond to the answers. We have to compare the markdown of
+      // the answers to the markdown of the options.
+      //
+      // NOTE:
+      // When it comes time to implement `ordering` types, ONLY answers will exist. ALSO, they will
+      // be in an ordered list, not an unordered list. So we can't share this parsing logic for every type.
+      const answer = extractAnswer(childrenBetween);
+      const answerItems: ListItem[] = getList(answer);
+      let answerIds: string[] = [];
+      try {
+        answerIds = answerItems.map(item => {
+          const markdown = toMarkdown(item);
+          if (!mdToIdMap.has(markdown)) {
+            throw new Error(`Could not find an option with markdown: ${markdown}`);
+          }
+          return mdToIdMap.get(markdown)!;
+        });
+        challengeInfo.answer = answerIds;
+      } catch(err: any) {
+        console.error(`Failed to parse the answer for ${challengeInfo.id}. Error: "${err.message}"`);
+      }
+      
+
+      console.log("Options:", optionIds, "Answer:", answerIds);
 
       const questionNode = {
         type: 'element',
@@ -98,7 +118,7 @@ function isEndTag(node: Node, depth: number, tagName: string): boolean {
 const extractQuestion = (nodes: Node[]) => extractTag(nodes, 'question');
 // const extractChallenge = (nodes: Node[]) => extractTag(nodes, 'challenge');
 const extractOptions = (nodes: Node[]) => extractTag(nodes, 'options');
-// const extractAnswer = (nodes: Node[]) => extractTag(nodes, 'answer');
+const extractAnswer = (nodes: Node[]) => extractTag(nodes, 'answer');
 
 function extractTag(nodes: Node[], tagName: string): Node[] {
   const [isStart, isEnd] = tagPair(-1 /*TODO: don't need this param?*/, tagName);

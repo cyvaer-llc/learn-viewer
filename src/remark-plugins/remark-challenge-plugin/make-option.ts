@@ -1,14 +1,7 @@
-import { Node } from 'unist';
+import { type Node } from 'unist';
 import { List, ListItem, Paragraph } from 'mdast';
-
-type GeneratedNode = {
-  type: string,
-  data: {
-    hName: string,
-    hProperties?: any
-  },
-  children?: (GeneratedNode | Node)[]
-}
+import { toMarkdown } from 'mdast-util-to-markdown';
+import { makeMdToHastNode, GeneratedNode } from './generate-node';
 
 const optionId = (challengeId: string, optionNumber: number) => `${challengeId}-option-${optionNumber}`;
 
@@ -18,22 +11,30 @@ const optionId = (challengeId: string, optionNumber: number) => `${challengeId}-
  * @param Node[]: optionsBlock 
  * @returns The root node of the options tree, and the list of ids of the checkboxes (the data).
  */
-export function extractOptionsNodesAndData(optionsBlock: Node[], challengeId: string): [GeneratedNode, string[]] {
+export function extractOptionsNodesAndData(optionsBlock: Node[], challengeId: string): [GeneratedNode, string[], Map<string, string>] {
   // Take a List and get its list items, then turn those into checkboxes.
   const optionsList = getList(optionsBlock);
-  
-  const optionsRoot = makeHastNode('div',
-    {
-      className: 'question-options'
-    },
-    optionsList.map((item, idx) => makeCheckbox(item, idx, challengeId))
-  );
-  const checkboxIds = generateCheckboxIds(challengeId, optionsList.length);
 
-  return [optionsRoot, checkboxIds];
+  // Note the option ID on each of the mdast ListItem nodes
+  addOptionIds(optionsList, challengeId);
+  
+  // The new root will be a div that contains the list of checkboxes. See the example structure described in docs/remark-challenge-plugin.md
+  const optionsRoot = makeMdToHastNode('div',
+    { className: 'question-options' },
+    optionsList.map(makeCheckbox)
+  );
+  const checkboxIds = optionsList.map(item => item.data!.optionId as string);
+  const mdToIdMap = new Map();
+  optionsList.forEach(listItem => {
+    const id = listItem.data!.optionId;
+    const markdown = toMarkdown(listItem);
+    mdToIdMap.set(markdown, id);
+  });
+
+  return [optionsRoot, checkboxIds, mdToIdMap];
 }
 
-function getList(nodes: Node[]): ListItem[] {
+export function getList(nodes: Node[]): ListItem[] {
   if (nodes.length === 0) {
     return [];
   }
@@ -46,25 +47,37 @@ function getList(nodes: Node[]): ListItem[] {
   return list.children;
 }
 
-function makeCheckbox(option: Node, idx: number, challengeId: string) {
+function addOptionIds(optionsList: ListItem[], challengeId: string) {
+  optionsList.forEach((item, idx) => {
+    const id = optionId(challengeId, idx);
+    item.data = { ...item.data, optionId: id };
+  });
+}
+
+function makeCheckbox(option: Node): GeneratedNode {
   if (option.type !== 'listItem') {
     throw new Error('Each thing that we turn into a checkbox is expected to be a ListItem');
   }
 
-  const id = optionId(challengeId, idx);
-  const checkbox = makeHastNode('input', {
+  const id = option.data!.optionId as string;
+  const checkbox = makeMdToHastNode('input', {
         type: 'checkbox',
         id: id,
         name: id
       }
   );
   const optionParagraph = unList(option);
-  const label = makeHastNode('label', { htmlFor: id }, [optionParagraph]);
+  const label = makeMdToHastNode('label', { htmlFor: id }, [optionParagraph]);
 
-  const res = makeHastNode('div', { className: 'tasklist-item' }, [checkbox, label]);
+  const res = makeMdToHastNode('div', { className: 'tasklist-item' }, [checkbox, label]);
   return res;
 };
 
+/**
+ * Take something that may be a ListItem and un-list it. That is, return the Paragraph inside it.
+ * @param node A node that may be a Paragraph or a ListItem
+ * @returns The Paragraph inside the ListItem or the Paragraph, depending on which was passed in.
+ */
 function unList(node: Node): Paragraph {
   if (node.type === 'paragraph') { return node as Paragraph; }
   if (node.type !== 'listItem') {
@@ -76,20 +89,4 @@ function unList(node: Node): Paragraph {
     throw new Error('Expected a list with a single paragraph');
   }
   return listItem.children[0] as Paragraph;
-}
-
-function makeHastNode(tag: string, hProperties: any, children: (GeneratedNode | Node)[] = []): GeneratedNode {
-  const res = {
-    type: 'element',
-    data: {
-      hName: tag,
-      hProperties
-    },
-    children
-  };
-  return res;
-}
-
-function generateCheckboxIds(challengeId: string, count: number): string[] {
-  return new Array(count).fill(0).map((_, i) => optionId(challengeId, i));
 }
