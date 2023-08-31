@@ -37,8 +37,7 @@ export default function Challenge(props: ChallengeProps) {
   const [state] = useContext(ChallengeStateContext) || [{} as ChallengeState];
 
   // Task List:
-  // Assume each entry is unique and all possible/selected options match,
-  // so as long as the sets are the same size they are equal.
+  // If every one of the possible options is in the selected options, then the task list is complete.
   const isTaskList = challengeType === 'tasklist';
   const completed = state?.[id]?.possibleOptions &&
     [...state[id].possibleOptions].every(entry => state?.[id]?.selectedOptions.has(entry));
