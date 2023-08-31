@@ -1,6 +1,6 @@
 import { useEffect, type ReactNode, useContext, type SyntheticEvent } from "react";
-import { ChallengeDispatchContext, ChallengeStateContext } from "../contexts/challenge";
-import { ChallengeInfo } from "../remark-plugins/remark-challenge-plugin";
+import { ChallengeDispatchContext, ChallengeStateContext } from "../../contexts/challenge";
+import { ChallengeInfo } from "../../remark-plugins/remark-challenge-plugin";
 import '../remark-plugins/remark-challenge-plugin.css';
 import './challenge.css';
 

@@ -1,5 +1,5 @@
 import { SyntheticEvent, useCallback, useContext } from "react";
-import { ChallengeDispatchContext } from "../contexts/challenge";
+import { ChallengeDispatchContext } from "../../contexts/challenge";
 
 export default function Checkbox(props: any) {
   const { toggleOption } = useContext(ChallengeDispatchContext) || {};
