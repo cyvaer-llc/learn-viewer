@@ -72,22 +72,26 @@ const visitor: Visitor<Node> = (node: Node, index: number | null, parent: Parent
   }
 };
 
-const tagPair = (depth: number, tagName: string) => {
-  const isTagStart = (node: Node) => isTag(node, depth, tagName);
-  const isTagEnd = (node: Node) => isEndTag(node, depth, tagName);
+const tagPair = (tagName: string) => {
+  const isTagStart = (node: Node) => isTag(node, tagName);
+  const isTagEnd = (node: Node) => isEndTag(node, tagName);
   return [isTagStart, isTagEnd];
 }
 
-const [isChallengeStart, isChallengeEnd] = tagPair(3, 'challenge');
+const [isChallengeStart, isChallengeEnd] = tagPair('challenge');
 
-function isTag(node: Node, _depth: number, tagName: string): boolean {
+/**
+ * For Learn markdown, tags are heading elements that have text like !<tagName>
+ * @param node The Node you want to check to see if it's a tag
+ * @param tagName The name of the tag we're looking for
+ * @returns Whether or not node is a tag
+ */
+function isTag(node: Node, tagName: string): boolean {
   if (node.type !== 'heading') {
     return false;
   }
 
   const headingNode = node as Heading;
-  // We've encountered some examples where the depth isn't always the same depth. Maybe all that matters is it's a heading?
-  //if (headingNode.depth !== depth || headingNode.children?.length !== 1 || headingNode.children?.[0].type !== 'text') {
   if (headingNode.children?.length !== 1 || headingNode.children?.[0].type !== 'text') {
     return false;
   }
@@ -96,18 +100,16 @@ function isTag(node: Node, _depth: number, tagName: string): boolean {
   return headingTextNode.value.startsWith(`!${tagName}`);
 }
 
-function isEndTag(node: Node, depth: number, tagName: string): boolean {
-  return isTag(node, depth, `end-${tagName}`);
+function isEndTag(node: Node, tagName: string): boolean {
+  return isTag(node, `end-${tagName}`);
 }
-
-
 
 const extractQuestion = (nodes: Node[]) => extractTag(nodes, 'question');
 const extractOptions = (nodes: Node[]) => extractTag(nodes, 'options');
 const extractAnswer = (nodes: Node[]) => extractTag(nodes, 'answer');
 
 function extractTag(nodes: Node[], tagName: string): Node[] {
-  const [isStart, isEnd] = tagPair(-1 /*TODO: don't need this param?*/, tagName);
+  const [isStart, isEnd] = tagPair(tagName);
 
   const startIdx = nodes.findIndex(isStart);
   if (startIdx === -1) {
