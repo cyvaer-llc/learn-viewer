@@ -4,7 +4,8 @@ import type { Transformer } from 'unified';
 import type { Node, Parent } from 'unist';
 import type { Root, Heading, Text, ListItem } from 'mdast';
 import { extractInfoNode, type ChallengeInfo } from './md-to-js-parse';
-import { extractOptionsNodesAndData, getList } from './make-option';
+import { extractOptionsNodesAndData, getList, unList } from './make-option';
+import { makeMdToHastNode } from './generate-node';
 
 export type { ChallengeInfo };
 
@@ -28,7 +29,7 @@ const visitor: Visitor<Node> = (node: Node, index: number | null, parent: Parent
 
       // The question becomes the new children of the challenge node.
       const question = extractQuestion(childrenBetween);
-      const [optionsRoot, optionIds, mdToIdMap] = extractOptionsNodesAndData(options, challengeInfo.id);
+      const [optionsRoot, optionIds, mdToIdMap] = extractOptionsNodesAndData(options, challengeInfo);
       challengeInfo.options = optionIds;
 
       // Extract answer data (for multiple choice)
@@ -44,7 +45,7 @@ const visitor: Visitor<Node> = (node: Node, index: number | null, parent: Parent
       let answerIds: string[] = [];
       try {
         answerIds = answerItems.map(item => {
-          const markdown = toMarkdown(item);
+          const markdown = toMarkdown(unList(item));
           if (!mdToIdMap.has(markdown)) {
             throw new Error(`Could not find an option with markdown: ${markdown}`);
           }
@@ -58,22 +59,11 @@ const visitor: Visitor<Node> = (node: Node, index: number | null, parent: Parent
 
       console.log("Options:", optionIds, "Answer:", answerIds);
 
-      const questionNode = {
-        type: 'element',
-        data: {
-          hName: 'div',
-        },
-        children: question
-      };
-
-      const challengeNode = {
-        type: 'challenge',
-        data: {
-          hName: 'section',
-          hProperties: challengeInfo,
-        },
-        children: [questionNode, optionsRoot]
-      };
+      const challengeNode =
+        makeMdToHastNode('section', challengeInfo, [
+          makeMdToHastNode('div', {}, question),
+          optionsRoot
+        ]);
 
       // Replace the start node with the challenge node.
       parent.children.splice(index, 1, challengeNode);

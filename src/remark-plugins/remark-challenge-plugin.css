@@ -1,4 +1,4 @@
-.tasklist-item {
+.question-options-item {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -10,21 +10,22 @@
   border-radius: 0.3em;
 }
 
-.tasklist-item:hover {
+.question-options-item:hover {
   border-color: #aaa;
   background-color: rgb(235, 246, 253);
 }
 
-.tasklist-item > input[type='checkbox'] {
+.question-options-item > input[type='checkbox'] {
   width: 1.5em;
   height: 1.5em;
+  flex-shrink: 0;
 }
 
-.tasklist-item > label {
+.question-options-item > label {
   flex-grow: 1;
 }
 
-.tasklist-item:has(input:checked) {
+.question-options-item:has(input:checked) {
   background-color: rgb(190, 224, 245);
 }
 

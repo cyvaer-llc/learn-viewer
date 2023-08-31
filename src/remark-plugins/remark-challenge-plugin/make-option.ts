@@ -2,6 +2,7 @@ import { type Node } from 'unist';
 import { List, ListItem, Paragraph } from 'mdast';
 import { toMarkdown } from 'mdast-util-to-markdown';
 import { makeMdToHastNode, GeneratedNode } from './generate-node';
+import { ChallengeInfo } from './md-to-js-parse';
 
 const optionId = (challengeId: string, optionNumber: number) => `${challengeId}-option-${optionNumber}`;
 
@@ -11,23 +12,23 @@ const optionId = (challengeId: string, optionNumber: number) => `${challengeId}-
  * @param Node[]: optionsBlock 
  * @returns The root node of the options tree, and the list of ids of the checkboxes (the data).
  */
-export function extractOptionsNodesAndData(optionsBlock: Node[], challengeId: string): [GeneratedNode, string[], Map<string, string>] {
+export function extractOptionsNodesAndData(optionsBlock: Node[], challenge: ChallengeInfo): [GeneratedNode, string[], Map<string, string>] {
   // Take a List and get its list items, then turn those into checkboxes.
   const optionsList = getList(optionsBlock);
 
   // Note the option ID on each of the mdast ListItem nodes
-  addOptionIds(optionsList, challengeId);
+  addOptionIds(optionsList, challenge.id);
   
   // The new root will be a div that contains the list of checkboxes. See the example structure described in docs/remark-challenge-plugin.md
   const optionsRoot = makeMdToHastNode('div',
     { className: 'question-options' },
-    optionsList.map(makeCheckbox)
+    optionsList.map(optionListItem => makeCheckbox(optionListItem, challenge))
   );
   const checkboxIds = optionsList.map(item => item.data!.optionId as string);
   const mdToIdMap = new Map();
   optionsList.forEach(listItem => {
     const id = listItem.data!.optionId;
-    const markdown = toMarkdown(listItem);
+    const markdown = toMarkdown(unList(listItem));
     mdToIdMap.set(markdown, id);
   });
 
@@ -54,22 +55,20 @@ function addOptionIds(optionsList: ListItem[], challengeId: string) {
   });
 }
 
-function makeCheckbox(option: Node): GeneratedNode {
+function makeCheckbox(option: Node, challenge: ChallengeInfo): GeneratedNode {
   if (option.type !== 'listItem') {
     throw new Error('Each thing that we turn into a checkbox is expected to be a ListItem');
   }
 
+  const { challengeType } = challenge;
   const id = option.data!.optionId as string;
-  const checkbox = makeMdToHastNode('input', {
-        type: 'checkbox',
-        id: id,
-        name: id
-      }
-  );
-  const optionParagraph = unList(option);
-  const label = makeMdToHastNode('label', { htmlFor: id }, [optionParagraph]);
 
-  const res = makeMdToHastNode('div', { className: 'tasklist-item' }, [checkbox, label]);
+  const res = makeMdToHastNode('div', { className: ['question-options-item', `${challengeType}-item`] }, [
+    makeMdToHastNode('input', { type: 'checkbox', id: id, name: id }),
+    makeMdToHastNode('label', { htmlFor: id }, [
+      unList(option)
+    ])
+  ]);
   return res;
 };
 
@@ -78,7 +77,7 @@ function makeCheckbox(option: Node): GeneratedNode {
  * @param node A node that may be a Paragraph or a ListItem
  * @returns The Paragraph inside the ListItem or the Paragraph, depending on which was passed in.
  */
-function unList(node: Node): Paragraph {
+export function unList(node: Node): Paragraph {
   if (node.type === 'paragraph') { return node as Paragraph; }
   if (node.type !== 'listItem') {
     throw new Error('Expected a list or paragraph');
