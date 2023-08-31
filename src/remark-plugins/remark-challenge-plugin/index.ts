@@ -79,9 +79,6 @@ const tagPair = (depth: number, tagName: string) => {
 }
 
 const [isChallengeStart, isChallengeEnd] = tagPair(3, 'challenge');
-// const [isOptionsStart, isOptionsEnd] = tagPair(5, 'options');
-// const [isQuestionStart, isQuestionEnd] = tagPair(5, 'question');
-// const [isAnswerStart, isAnswerEnd] = tagPair(5, 'answer');
 
 function isTag(node: Node, _depth: number, tagName: string): boolean {
   if (node.type !== 'heading') {
@@ -106,7 +103,6 @@ function isEndTag(node: Node, depth: number, tagName: string): boolean {
 
 
 const extractQuestion = (nodes: Node[]) => extractTag(nodes, 'question');
-// const extractChallenge = (nodes: Node[]) => extractTag(nodes, 'challenge');
 const extractOptions = (nodes: Node[]) => extractTag(nodes, 'options');
 const extractAnswer = (nodes: Node[]) => extractTag(nodes, 'answer');
 
@@ -139,13 +135,28 @@ function extractTag(nodes: Node[], tagName: string): Node[] {
  *
  * for example:
  *
- * ### !callout-challenge
- * 
- * ## The Title goes here
- * 
- * Some content with **bold text**
- * 
- * ### !end-callout
+ *   ### !challenge
+ *   * type: multiple-choice
+ *   * id: abc368
+ *   * title: Title Describing this question
+ *   ##### !question
+ *
+ *   What is the *answer*? (Pick one)
+ *
+ *   ##### !end-question
+ *   ##### !options
+ *
+ *   * Option `1`
+ *   * Option `2` with _some_ markdown
+ *   * Option `3`**!**
+ *
+ *   ##### !end-options
+ *   ##### !answer
+ *
+ *   * Option `2` with _some_ markdown
+ *
+ *   ##### !end-answer
+ *   ### !end-challenge
  *
  */
 export const plugin = () => {
