@@ -52,7 +52,7 @@ export default function Challenge(props: ChallengeProps) {
 
   return (
     <section className="challenge">
-      <div className={`badge${!isSupported ? ' strike' : ''}`}>challenge ({challengeType})</div>
+      <div className={`badge ${!isSupported ? 'strike' : ''}`}>challenge ({challengeType})</div>
       <h2>{ title }</h2>
       <section>
         <code className="id-block">ID: {id}</code>
