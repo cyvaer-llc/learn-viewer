@@ -23,6 +23,7 @@
   padding: .5rem;
   border: 1px rgb(62, 205, 62) solid;
   border-radius: .3rem;
+  margin-block: 1em;
 }
 
 .challenge-success::before {
