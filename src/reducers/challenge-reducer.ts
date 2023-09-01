@@ -8,7 +8,9 @@ export type ChallengeOptionConfiguration = {
   selectedOptions: Set<ChallengeOption>;
   correctOptions?: Set<ChallengeOption>;
   lastAttempt: 'unanswered' | 'correct' | 'wrong';
+  textAnswer?: string;
   challengeType: string;
+  placeholder?: string;
 }
 
 export type ChallengeState = {
@@ -39,16 +41,26 @@ type InitializeAction = {
   }
 };
 
-type ChallengeAction = InitializeAction | ToggleAction | CheckAction;
+type AnswerAction = {
+  type: 'SET_ANSWER';
+  payload: {
+    challengeId: string;
+    answer: string;
+  }
+};
+
+type ChallengeAction = InitializeAction | ToggleAction | CheckAction | AnswerAction;
 
 export type ChallengeSelectors = {
   isSelected: (optionId: ChallengeOption) => boolean;
+  getTextAnswer: (challengeId: string) => string;
 }
 
 export type ChallengeMutators = {
   toggleOption: (optionId: ChallengeOption) => void;
   setPossibilities: (challengeInfo: ChallengeInfo) => void;
   checkAnswer: (challengeId: string) => void;
+  setTextAnswer: (challengeId: string, textAnswer: string) => void;
 }
 
 const challengeIdFromOptionId = (optionId: ChallengeOption): string => {
@@ -81,7 +93,7 @@ const set = (challenge: ChallengeInfo): InitializeAction => {
       }
     }
   };
-}
+};
 
 const toggle = (optionId: ChallengeOption): ToggleAction => {
   const [challengeId, _] = optionId.split('-option-');
@@ -100,7 +112,17 @@ const check = (challengeId: string): CheckAction => {
     payload: {
       challengeId
     }
-  }
+  };
+};
+
+const answer = (challengeId: string, textAnswer: string): AnswerAction => {
+  return {
+    type: 'SET_ANSWER',
+    payload: {
+      challengeId,
+      answer: textAnswer
+    }
+  };
 };
 
 function reducer(state: ChallengeState = INITIAL_STATE, action: ChallengeAction): ChallengeState {
@@ -127,7 +149,7 @@ function reducer(state: ChallengeState = INITIAL_STATE, action: ChallengeAction)
       };
     }
     case 'SET_POSSIBILITIES': {
-      const { challenge: { id: challengeId, options, answer, challengeType } } = action.payload;
+      const { challenge: { id: challengeId, options, answer, challengeType, placeholder } } = action.payload;
       // TODO: Support persisting challenge state. As-is, we'll reset
       //       challenges on every re-render.
       return {
@@ -137,7 +159,8 @@ function reducer(state: ChallengeState = INITIAL_STATE, action: ChallengeAction)
           selectedOptions: new Set<ChallengeOption>(),
           correctOptions: new Set<ChallengeOption>(answer),
           lastAttempt: 'unanswered',
-          challengeType
+          challengeType,
+          placeholder
         }
       };
     }
@@ -156,6 +179,17 @@ function reducer(state: ChallengeState = INITIAL_STATE, action: ChallengeAction)
         [challengeId]: {
           ...challenge,
           lastAttempt: isCorrect ? 'correct' : 'wrong'
+        }
+      };
+    }
+    case 'SET_ANSWER': {
+      const { challengeId, answer: textAnswer } = action.payload;
+      const challenge = state[challengeId];
+      return {
+        ...state,
+        [challengeId]: {
+          ...challenge,
+          textAnswer
         }
       };
     }
@@ -178,6 +212,9 @@ export function useChallengeReducer(): [ChallengeState, ChallengeMutators, Chall
       checkAnswer: (challengeId: string) => {
         dispatch(check(challengeId));
       },
+      setTextAnswer: (challengeId: string, textAnswer: string) => {
+        dispatch(answer(challengeId, textAnswer));
+      }
     };
     return mutators;
   }, []);
@@ -188,6 +225,10 @@ export function useChallengeReducer(): [ChallengeState, ChallengeMutators, Chall
         const challengeId = challengeIdFromOptionId(optionId);
         const challenge = state[challengeId];
         return challenge?.selectedOptions.has(optionId);
+      },
+      getTextAnswer: (challengeId: string): string => {
+        const challenge = state[challengeId];
+        return challenge?.textAnswer || '';
       }
     };
     return selectors;

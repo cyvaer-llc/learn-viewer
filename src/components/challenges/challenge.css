@@ -27,6 +27,18 @@
   color: white;
 }
 
+.challenge-content {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.challenge-content > textarea {
+  height: 15em;
+  padding: 1em;
+  margin-block: 1em;
+}
+
 .id-block {
   font-size: .8em;
   font-style: italic;

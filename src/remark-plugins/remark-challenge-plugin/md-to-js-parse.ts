@@ -9,6 +9,7 @@ export type ChallengeInfo = {
   id: string,
   title: string,
   challengeType: string,
+  placeholder?: string,
   topics?: string[],
   options?: string[] | string, // remark turns the array into a space-separated string
   answer?: string[] | string, // remark turns the array into a space-separated string

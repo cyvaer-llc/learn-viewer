@@ -1,5 +1,6 @@
 import { visit, SKIP, type Visitor, type VisitorResult } from 'unist-util-visit';
 import { toMarkdown } from 'mdast-util-to-markdown';
+import { toString as mdastToString } from 'mdast-util-to-string';
 import type { Transformer } from 'unified';
 import type { Node, Parent } from 'unist';
 import type { Root, Heading, Text, ListItem } from 'mdast';
@@ -25,10 +26,11 @@ const visitor: Visitor<Node> = (node: Node, index: number | null, parent: Parent
 
       // These properties will be provided to whatever React component handles the `section` tag.
       const challengeInfo: ChallengeInfo = extractInfoNode(childrenBetween);
-      const options = extractOptions(childrenBetween);
 
       // The question becomes the new children of the challenge node.
       const question = extractQuestion(childrenBetween);
+
+      const options = extractOptions(childrenBetween);
       const [optionsRoot, optionIds, mdToIdMap] = extractOptionsNodesAndData(options, challengeInfo);
       challengeInfo.options = optionIds;
 
@@ -55,9 +57,14 @@ const visitor: Visitor<Node> = (node: Node, index: number | null, parent: Parent
       } catch(err: any) {
         console.error(`Failed to parse the answer for ${challengeInfo.id}. Error: "${err.message}"`);
       }
-      
 
       console.log("Options:", optionIds, "Answer:", answerIds);
+
+      const placeholder = extractPlaceholder(childrenBetween);
+      const placeholderText = mdastToString(placeholder);
+      challengeInfo.placeholder = placeholderText;
+
+      console.log(`${challengeInfo.id}: placeholder text: ${challengeInfo.placeholder}`);
 
       const challengeNode =
         makeMdToHastNode('section', challengeInfo, [
@@ -107,6 +114,7 @@ function isEndTag(node: Node, tagName: string): boolean {
 const extractQuestion = (nodes: Node[]) => extractTag(nodes, 'question');
 const extractOptions = (nodes: Node[]) => extractTag(nodes, 'options');
 const extractAnswer = (nodes: Node[]) => extractTag(nodes, 'answer');
+const extractPlaceholder = (nodes: Node[]) => extractTag(nodes, 'placeholder');
 
 function extractTag(nodes: Node[], tagName: string): Node[] {
   const [isStart, isEnd] = tagPair(tagName);
