@@ -1,9 +1,8 @@
-import { useEffect, type ReactNode, useContext } from "react";
-import { ChallengeDispatchContext, ChallengeStateContext } from "../../contexts/challenge";
+import { useEffect, type ReactNode } from "react";
+import { useChallengeDispatch, useChallengeState } from "../../contexts/challenge";
 import { ChallengeInfo } from "../../remark-plugins/remark-challenge-plugin";
 import '../../remark-plugins/remark-challenge-plugin.css';
 import './challenge.css';
-import { type ChallengeState } from "../../reducers/challenge-reducer";
 import AnswerCheck from "./answer-check";
 
 const UNSUPPORTED_CHALLENGE_TYPES = [
@@ -33,21 +32,21 @@ export default function Challenge(props: ChallengeProps) {
   const optsArray = typeof options === 'string' ? options.split(' ') : options || [];
   const answerArray = typeof answer === 'string' ? answer.split(' ') : answer || [];
 
-  const { setPossibilities, setCorrectAnswer } = useContext(ChallengeDispatchContext) || {};
-  const [state] = useContext(ChallengeStateContext) || [{} as ChallengeState];
+  const { setPossibilities, setCorrectAnswer } = useChallengeDispatch();
+  const [ state ] = useChallengeState();
 
   // Task List:
   // If every one of the possible options is in the selected options, then the task list is complete.
   const isTaskList = challengeType === 'tasklist';
-  const completed = state?.[id]?.possibleOptions &&
-    [...state[id].possibleOptions].every(entry => state?.[id]?.selectedOptions.has(entry));
+  const completed = state[id]?.possibleOptions &&
+    [...state[id].possibleOptions].every(entry => state[id]?.selectedOptions.has(entry));
 
   // checkbox and multiple-choice:
   const isAnswerCheckable = ['checkbox', 'multiple-choice'].includes(challengeType);
   
   useEffect(() => {
-    setPossibilities?.(optsArray);
-    setCorrectAnswer?.(answerArray);
+    setPossibilities(optsArray);
+    setCorrectAnswer(answerArray);
   }, [options, answer]);
 
   return (

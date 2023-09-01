@@ -1,6 +1,5 @@
-import { type SyntheticEvent, useContext } from "react";
-import { ChallengeDispatchContext, ChallengeStateContext } from "../../contexts/challenge";
-import { type ChallengeState } from "../../reducers/challenge-reducer";
+import { type SyntheticEvent } from "react";
+import { useChallengeDispatch, useChallengeState } from "../../contexts/challenge";
 import './answer-check.css';
 
 export type AnswerCheckProps = {
@@ -10,10 +9,10 @@ export type AnswerCheckProps = {
 export default function AnswerCheck(props: AnswerCheckProps) {
   const { challengeId } = props;
 
-  const { checkAnswer } = useContext(ChallengeDispatchContext) || {};
-  const [ state ] = useContext(ChallengeStateContext) || [{} as ChallengeState ];
+  const { checkAnswer } = useChallengeDispatch();
+  const [ state ] = useChallengeState();
 
-  const answerState = state?.[challengeId]?.lastAttempt;
+  const answerState = state[challengeId]?.lastAttempt;
 
   const onCheckClicked = (evt: SyntheticEvent<HTMLButtonElement>) => {
     evt.preventDefault();
