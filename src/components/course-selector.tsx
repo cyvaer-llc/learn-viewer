@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './course-selector.css';
 import Combobox from 'react-widgets/Combobox';
-import { CourseSettersContext, CourseStateContext } from '../contexts/current-course';
+import { useCourseSetters, useCourseState } from '../contexts/current-course';
 import { CourseModel } from '../models/course';
 import { GithubUrl } from '../models/github-url';
 
@@ -36,8 +36,8 @@ const DEFAULT_COURSE = courseFromQuery() || KNOWN_COURSE_URLS[0][1];
 
 export default function CourseSelector(_props: CourseSelectorProps) {
   const [ course, setCourse ] = useState(DEFAULT_COURSE);
-  const { setCourseLoading, setCourse: setCourseModel, setCourseError } = useContext(CourseSettersContext)!;
-  const courseState = useContext(CourseStateContext)!;
+  const { setCourseLoading, setCourse: setCourseModel, setCourseError } = useCourseSetters();
+  const courseState = useCourseState();
 
   const loadCourseData = (courseUrl: string): () => void => {
     const abortController = new AbortController();

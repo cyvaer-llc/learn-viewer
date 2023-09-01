@@ -1,6 +1,6 @@
-import { SyntheticEvent, useContext, useEffect, useState } from "react";
+import { SyntheticEvent, useEffect, useState } from "react";
 import { ContentFileModel } from "../models/content-file";
-import { CurrentMarkdownDispatchContext } from "../contexts/current-markdown";
+import { useCurrentMarkdownDispatch } from "../contexts/current-markdown";
 import { SetMarkdownAction } from '../reducers/markdown-actions';
 import { GithubUrl } from "../models/github-url";
 
@@ -15,7 +15,7 @@ export default function ContentFile(props: ContentFileProps) {
 
   const ghUrl = new GithubUrl(contentFile.path).githubUrl();
 
-  const dispatch = useContext(CurrentMarkdownDispatchContext);
+  const dispatch = useCurrentMarkdownDispatch();
 
   const stashUidInQueryParams = () => {
     const params = new URLSearchParams(window.location.search);
@@ -31,7 +31,7 @@ export default function ContentFile(props: ContentFileProps) {
 
   const fetchMarkdown = async (signal?: AbortSignal) => {
     const markdown = await contentFile.fetchMarkdown(signal);
-    dispatch?.(new SetMarkdownAction(markdown, contentFile.path));
+    dispatch(new SetMarkdownAction(markdown, contentFile.path));
     const title = await contentFile.fetchTitle(signal);
     setTitle(title);
     stashUidInQueryParams();

@@ -6,18 +6,18 @@ import Course from './components/course';
 import Document from './components/document';
 import currentMarkdownReducer, { INITIAL_STATE } from './reducers/current-markdown-reducer';
 import useCourseReducer from './reducers/course-reducer';
-import { CurrentMarkdownDispatchContext, CurrentMarkdownStateContext } from './contexts/current-markdown';
-import { CourseSettersContext, CourseStateContext } from './contexts/current-course';
+import { CurrentMarkdownDispatchProvider, CurrentMarkdownStateProvider } from './contexts/current-markdown';
+import { CourseSettersProvider, CourseStateProvider } from './contexts/current-course';
 
 export default function App() {
   const [courseState, courseSetters] = useCourseReducer();
   const [mdState, dispatchMarkdown] = useReducer(currentMarkdownReducer, INITIAL_STATE);
 
   return (
-    <CurrentMarkdownDispatchContext.Provider value={dispatchMarkdown}>
-      <CourseSettersContext.Provider value={courseSetters}>
-        <CurrentMarkdownStateContext.Provider value={mdState}>
-          <CourseStateContext.Provider value={courseState}>
+    <CurrentMarkdownDispatchProvider value={dispatchMarkdown}>
+      <CourseSettersProvider value={courseSetters}>
+        <CurrentMarkdownStateProvider value={mdState}>
+          <CourseStateProvider value={courseState}>
             <header>
               <h1>Learn Curriculum Viewer</h1>
               <CourseSelector />
@@ -29,10 +29,10 @@ export default function App() {
             <footer>
               &copy;2023 Cyvaer
             </footer>
-          </CourseStateContext.Provider>
-        </CurrentMarkdownStateContext.Provider>
-      </CourseSettersContext.Provider>
-    </CurrentMarkdownDispatchContext.Provider>
+          </CourseStateProvider>
+        </CurrentMarkdownStateProvider>
+      </CourseSettersProvider>
+    </CurrentMarkdownDispatchProvider>
   )
 }
 

@@ -1,14 +1,14 @@
 import Section from './section';
 
 import './course.css';
-import { useContext } from 'react';
-import { CourseStateContext } from '../contexts/current-course';
+
+import { useCourseState } from '../contexts/current-course';
 
 type CourseProps = {
 }
 
 export default function Course(_props: CourseProps) {
-  const { course: courseModel, loading, error } = useContext(CourseStateContext)!;
+  const { course: courseModel, loading, error } = useCourseState();
 
   if (error) {
     return <div id='error'>Error Loading Course: {error}</div>;
