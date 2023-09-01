@@ -37,7 +37,8 @@ Known types:
 Each challenge needs to have its markdown presentation preserved since, for example, the question block can contain complex content such as tables. In addition, structural html components need to be generated that are particular to the data. Finally, data that is *not* presentational (such as the correct answers in a multiple-choice challenge) need to be extracted and parsed so that they can be provided to the interactive components that implement them.
 
 #### TODO
-* Consider using [unist-util-assert](https://github.com/syntax-tree/unist-util-assert) for checking that nodes are what we expect before using them.
+* [ ] Learn is apparently capable of handling invalid markdown. For example, GitHub markdown makes a mess of challenge `0a8cfa41-b770-4e80-8af0-f4d5127c8424` [see: iterating-over-data/while-loops.md](https://raw.githubusercontent.com/Ada-Developers-Academy/core-unit-1/main/iterating-over-data/while-loops.md). The options list is expected to be a list of code snippets, but for that to work in normal markdown parsing, the snippets need to be indented by at least two spaces.
+* [ ] Consider using [unist-util-assert](https://github.com/syntax-tree/unist-util-assert) for checking that nodes are what we expect before using them.
 
 
 ### tasklist
