@@ -28,6 +28,8 @@ Known types:
 * [ ] paragraph
 * [ ] project
   * [ ] testable-project
+    - BUG: `testable-project` has an `upstream` field in its metadata that contains a URL. GitHub-flavored markdown will turn this into a link, violating the expectation that everything in the list be plaintext. (For example: `* upstream: https://github.com/cyvaer-llc/testable-project` might be an entry.)
+    - RECOMMENDATION: Split the challenge parsing into two phases: first, parse and remove metadata, leaving only markdown that should be turned into structure. Then, parse the metadata into hast as expected.
 * [ ] short-answer
 * [x] tasklist
 
