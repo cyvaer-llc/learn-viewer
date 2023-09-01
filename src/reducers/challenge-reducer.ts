@@ -1,4 +1,5 @@
 import { useMemo, useReducer } from "react";
+import { ChallengeInfo } from "../remark-plugins/remark-challenge-plugin";
 
 // Challenge options should be of the form <challengeId>-option-<optionIndex>
 type ChallengeOption = string;
@@ -7,6 +8,7 @@ export type ChallengeOptionConfiguration = {
   selectedOptions: Set<ChallengeOption>;
   correctOptions?: Set<ChallengeOption>;
   lastAttempt: 'unanswered' | 'correct' | 'wrong';
+  challengeType: string;
 }
 
 export type ChallengeState = {
@@ -15,14 +17,29 @@ export type ChallengeState = {
 
 const INITIAL_STATE: ChallengeState = {};
 
-export type ChallengeAction = {
-  type: string;
+type ToggleAction = {
+  type: 'TOGGLE_OPTION';
   payload: {
     challengeId: string;
-    optionId?: ChallengeOption;
-    options?: ChallengeOption[];
+    optionId: ChallengeOption;
   }
 };
+
+type CheckAction = {
+  type: 'CHECK_ANSWER';
+  payload: {
+    challengeId: string;
+  }
+};
+
+type InitializeAction = {
+  type: 'SET_POSSIBILITIES';
+  payload: {
+    challenge: ChallengeInfo
+  }
+};
+
+type ChallengeAction = InitializeAction | ToggleAction | CheckAction;
 
 export type ChallengeSelectors = {
   isSelected: (optionId: ChallengeOption) => boolean;
@@ -30,8 +47,7 @@ export type ChallengeSelectors = {
 
 export type ChallengeMutators = {
   toggleOption: (optionId: ChallengeOption) => void;
-  setPossibilities: (options: ChallengeOption[]) => void;
-  setCorrectAnswer: (options: ChallengeOption[]) => void;
+  setPossibilities: (challengeInfo: ChallengeInfo) => void;
   checkAnswer: (challengeId: string) => void;
 }
 
@@ -40,45 +56,34 @@ const challengeIdFromOptionId = (optionId: ChallengeOption): string => {
   return challengeId;
 }
 
-const set = (options: ChallengeOption[]): ChallengeAction => {
-  if (options.length < 1) {
+const set = (challenge: ChallengeInfo): InitializeAction => {
+  const { options, answer } = challenge;
+
+  // If the options passed in is a string, remark has probably separated each array item with a space.
+  const optsArray = typeof options === 'string' ? options.split(' ') : options || [];
+  const answerArray = typeof answer === 'string' ? answer.split(' ') : answer || [];
+
+  if (optsArray.length < 1) {
     throw new Error('setPossibilities requires at least one option');
   }
 
-  const challengeId = challengeIdFromOptionId(options[0]);
-  if (options.some(option => challengeIdFromOptionId(option) !== challengeId)) {
-    throw new Error('All options must be for the same challenge');
+  if (answerArray.length < 1) {
+    throw new Error('setAnswers requires at least one option');
   }
 
   return {
     type: 'SET_POSSIBILITIES',
     payload: {
-      challengeId,
-      options
+      challenge: {
+        ...challenge,
+        options: optsArray,
+        answer: answerArray
+      }
     }
   };
 }
 
-const setAnswers = (options: ChallengeOption[]): ChallengeAction => {
-  if (options.length < 1) {
-    throw new Error('setAnswers requires at least one option');
-  }
-
-  const challengeId = challengeIdFromOptionId(options[0]);
-  if (options.some(option => challengeIdFromOptionId(option) !== challengeId)) {
-    throw new Error('All answers must be for the same challenge');
-  }
-
-  return {
-    type: 'SET_ANSWERS',
-    payload: {
-      challengeId,
-      options
-    }
-  };
-}
-
-const toggle = (optionId: ChallengeOption): ChallengeAction => {
+const toggle = (optionId: ChallengeOption): ToggleAction => {
   const [challengeId, _] = optionId.split('-option-');
   return {
     type: 'TOGGLE_OPTION',
@@ -89,7 +94,7 @@ const toggle = (optionId: ChallengeOption): ChallengeAction => {
   };
 };
 
-const check = (challengeId: string): ChallengeAction => {
+const check = (challengeId: string): CheckAction => {
   return {
     type: 'CHECK_ANSWER',
     payload: {
@@ -103,10 +108,14 @@ function reducer(state: ChallengeState = INITIAL_STATE, action: ChallengeAction)
     case 'TOGGLE_OPTION': {
       const { challengeId, optionId: option } = action.payload;
       const challengeOptions = new Set<ChallengeOption>(state[challengeId].selectedOptions);
-      if (challengeOptions.has(option!)) {
-        challengeOptions.delete(option!);
+      if (challengeOptions.has(option)) {
+        challengeOptions.delete(option);
       } else {
-        challengeOptions.add(option!);
+        if (state[challengeId].challengeType === 'multiple-choice') {
+          // multiple-choice type challenges should only have one option selected at a time
+          challengeOptions.clear();
+        }
+        challengeOptions.add(option);
       }
       return {
         ...state,
@@ -118,7 +127,7 @@ function reducer(state: ChallengeState = INITIAL_STATE, action: ChallengeAction)
       };
     }
     case 'SET_POSSIBILITIES': {
-      const { challengeId, options } = action.payload;
+      const { challenge: { id: challengeId, options, answer, challengeType } } = action.payload;
       // TODO: Support persisting challenge state. As-is, we'll reset
       //       challenges on every re-render.
       return {
@@ -126,19 +135,11 @@ function reducer(state: ChallengeState = INITIAL_STATE, action: ChallengeAction)
         [challengeId]: {
           possibleOptions: new Set<ChallengeOption>(options),
           selectedOptions: new Set<ChallengeOption>(),
-          lastAttempt: 'unanswered'
+          correctOptions: new Set<ChallengeOption>(answer),
+          lastAttempt: 'unanswered',
+          challengeType
         }
       };
-    }
-    case 'SET_ANSWERS': {
-      const { challengeId, options } = action.payload;
-      return {
-        ...state,
-        [challengeId]: {
-          ...state[challengeId],
-          correctOptions: new Set<ChallengeOption>(options)
-        }
-      }
     }
     case 'CHECK_ANSWER': {
       const { challengeId } = action.payload;
@@ -171,15 +172,8 @@ export function useChallengeReducer(): [ChallengeState, ChallengeMutators, Chall
       toggleOption: (optionId: ChallengeOption) => {
         dispatch(toggle(optionId));
       },
-      setPossibilities: (options: ChallengeOption[]) => {
-        dispatch(set(options));
-      },
-      setCorrectAnswer: (options: ChallengeOption[]) => {
-        if (options?.length < 1) {
-          console.log('No options provided to setCorrectAnswer; skipping');
-          return;
-        }
-        dispatch(setAnswers(options));
+      setPossibilities: (challenge: ChallengeInfo) => {
+        dispatch(set(challenge));
       },
       checkAnswer: (challengeId: string) => {
         dispatch(check(challengeId));
@@ -190,10 +184,10 @@ export function useChallengeReducer(): [ChallengeState, ChallengeMutators, Chall
 
   const selectors = useMemo(() => {
     const selectors: ChallengeSelectors = {
-      isSelected: (optionId: ChallengeOption) => {
+      isSelected: (optionId: ChallengeOption): boolean => {
         const challengeId = challengeIdFromOptionId(optionId);
         const challenge = state[challengeId];
-        return !challenge || !challenge.selectedOptions.has(optionId);
+        return challenge?.selectedOptions.has(optionId);
       }
     };
     return selectors;

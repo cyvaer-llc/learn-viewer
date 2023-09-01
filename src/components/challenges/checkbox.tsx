@@ -8,8 +8,8 @@ export default function Checkbox(props: any) {
   const { toggleOption } = useChallengeDispatch();
 
   const changed = useCallback((evt: SyntheticEvent<HTMLInputElement>) => {
-    toggleOption?.(evt.currentTarget.name);
+    toggleOption(evt.currentTarget.name);
   }, []);
 
-  return (<input {...props} value={ selectors.isSelected(name) } type="checkbox" onChange={changed} />);
+  return (<input {...props} checked={ selectors.isSelected(name) } type="checkbox" onChange={changed} />);
 }

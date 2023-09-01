@@ -19,20 +19,17 @@ const UNSUPPORTED_CHALLENGE_TYPES = [
 // 'checkbox'
 // 'multiple-choice'
 
-type ChallengeProps = ChallengeInfo &{
+type ChallengeProps = ChallengeInfo & {
   children: ReactNode[]
 };
 
 export default function Challenge(props: ChallengeProps) {
-  const { id, title, challengeType, children, options, answer } = props;
+  const { children, ...challengeInfo } = props;
+  const { id, title, challengeType, options, answer } = challengeInfo;
 
   const isSupported = !UNSUPPORTED_CHALLENGE_TYPES.includes(challengeType);
 
-  // If the options passed in is a string, remark has probably separated each array item with a space.
-  const optsArray = typeof options === 'string' ? options.split(' ') : options || [];
-  const answerArray = typeof answer === 'string' ? answer.split(' ') : answer || [];
-
-  const { setPossibilities, setCorrectAnswer } = useChallengeDispatch();
+  const { setPossibilities } = useChallengeDispatch();
   const [ state ] = useChallengeState();
 
   // Task List:
@@ -45,9 +42,8 @@ export default function Challenge(props: ChallengeProps) {
   const isAnswerCheckable = ['checkbox', 'multiple-choice'].includes(challengeType);
   
   useEffect(() => {
-    setPossibilities(optsArray);
-    setCorrectAnswer(answerArray);
-  }, [options, answer]);
+    setPossibilities(challengeInfo);
+  }, [options, answer, challengeType]);
 
   return (
     <section className="challenge">
