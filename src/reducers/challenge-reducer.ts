@@ -108,10 +108,14 @@ function reducer(state: ChallengeState = INITIAL_STATE, action: ChallengeAction)
     case 'TOGGLE_OPTION': {
       const { challengeId, optionId: option } = action.payload;
       const challengeOptions = new Set<ChallengeOption>(state[challengeId].selectedOptions);
-      if (challengeOptions.has(option!)) {
-        challengeOptions.delete(option!);
+      if (challengeOptions.has(option)) {
+        challengeOptions.delete(option);
       } else {
-        challengeOptions.add(option!);
+        if (state[challengeId].challengeType === 'multiple-choice') {
+          // multiple-choice type challenges should only have one option selected at a time
+          challengeOptions.clear();
+        }
+        challengeOptions.add(option);
       }
       return {
         ...state,
@@ -180,10 +184,10 @@ export function useChallengeReducer(): [ChallengeState, ChallengeMutators, Chall
 
   const selectors = useMemo(() => {
     const selectors: ChallengeSelectors = {
-      isSelected: (optionId: ChallengeOption) => {
+      isSelected: (optionId: ChallengeOption): boolean => {
         const challengeId = challengeIdFromOptionId(optionId);
         const challenge = state[challengeId];
-        return !challenge || !challenge.selectedOptions.has(optionId);
+        return challenge?.selectedOptions.has(optionId);
       }
     };
     return selectors;

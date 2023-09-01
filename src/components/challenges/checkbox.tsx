@@ -11,5 +11,5 @@ export default function Checkbox(props: any) {
     toggleOption(evt.currentTarget.name);
   }, []);
 
-  return (<input {...props} value={ selectors.isSelected(name) } type="checkbox" onChange={changed} />);
+  return (<input {...props} checked={ selectors.isSelected(name) } type="checkbox" onChange={changed} />);
 }
