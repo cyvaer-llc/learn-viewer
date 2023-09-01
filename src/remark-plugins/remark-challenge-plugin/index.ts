@@ -41,7 +41,7 @@ const visitor: Visitor<Node> = (node: Node, index: number | null, parent: Parent
       // When it comes time to implement `ordering` types, ONLY answers will exist. ALSO, they will
       // be in an ordered list, not an unordered list. So we can't share this parsing logic for every type.
       const answer = extractAnswer(childrenBetween);
-      const answerItems: ListItem[] = getList(answer);
+      const answerItems: ListItem[] = ['multiple-choice', 'checkbox'].includes(challengeInfo.challengeType) ? getList(answer) : [];
       let answerIds: string[] = [];
       try {
         answerIds = answerItems.map(item => {
