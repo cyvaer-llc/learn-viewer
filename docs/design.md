@@ -1,4 +1,4 @@
-# Design Doc
+# Initial Design Doc
 
 ## Markdown Support
 Options for markdown processing include:
@@ -42,54 +42,4 @@ One path forward might be to write plugins for each special syntax override. Her
 A similar example for plugins might be [remark-hint](https://github.com/sergioramos/remark-hint).
 
 ## Curriculum structure
-### Courses
-Learn curricula are organized into a "course" for every cohort/campus. The course is described in a YAML file. For example: [c19/seattle/course.yaml](https://github.com/Ada-Developers-Academy/core/blob/main/c19/seattle/course.yaml).
-
-> YAML parser: [js-yaml](https://www.npmjs.com/package/js-yaml)
-
-These point at github repos that each have a `config.yaml` in them. The `config.yaml` files have a list of "Standards". These are like a list of topics. The topics are each containers for a list of lesson-like things and quizzes or checkpoints.
-
-To get a high level prototype going, we should:
-1. Parse the `course.yaml` to get the list of "sections" and their repositories.
-1. For each repo, parse the `config.yaml` to get a list of "Standards"
-   - Summarize all of the possible types of `ContentFiles`
-   - Summarize all of the possible types of `SuccessCriteria`
-   - List each `ContentFile` and its type in each Standard.
-
-#### YAML Structure
-The structure of the objects we get from the `course.yaml` are:
-
-```JSON
-{
-  ":Course": [
-    {
-      ":Section": "Precourse",
-      ":Repos": [
-        {
-          ":Url": "https://github.com/ada-developers-academy/ada-precourse-v2"
-        }
-      ]
-    },
-    {
-      ":Section": "About Ada",
-      ":Repos": [
-        {
-          ":Url": "https://github.com/Ada-Developers-Academy/core-about-ada"
-        }
-      ]
-    },
-    /* [...] */
-  ]
-}
-```
-
-Repos have their own `config.yaml`. That structure is slightly more extensive. Each repo is "section", which contains a list of "standards". These standards are like groups of lessons/exercises/activities. The lessons, exercises, activities, etc., are called "Content Files". To represent these, we've created the following models:
-- [Course](../src/models/course.ts) (a `course.yaml` representation)
-- [Section](../src/models/section.ts) (a list of Standards with title & url)
-- [Standard](../src/models/standard.ts) (a grouping of Content Files with some metadata)
-- [Content File](../src/models/content-file.ts) (metadata about an actual lesson / exercise / activity, and its actual markdown).
-
-## Other TODOs
-- [ ] Deep links (e.g. to Unit 2 > Intro To SQL)
-- [ ] Deploy (maybe to AWS S3? Either with Amplify or GH Actions?)
-- [ ] Have an external link to Content Items in github (not the raw yaml but the github links) next to the entry to load the markdown
+See: [Curriculum Structure](./curriculum-structure.md)

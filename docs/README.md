@@ -1,15 +1,9 @@
 # Documentation
-## Initial Design Document
-Notes on the buildout of this system
+## Handling Learn Metadata and Markdown
+- [Curriculum Structure](./curriculum-structure.md): how we handle `course.yaml` and `config.yaml`
+- [Custom Markdown](./custom-markdown.md): how we support the custom markdown tags found in Learn-flavored markdown files.
 
-[design.md](./design.md)
-
-## Custom Markdown
-The Learn markdown format includes a bunch of custom start/end markers. This is a listing of the known ones and how we might support them.
-
-[custom-markdown.md](./custom-markdown.md)
-
-## Storage
-Learners are used to being able to save progress. How should we do that?
-
-[storage-support.md](./storage-support.md)
+## Design Decision Records
+- Notes on the buildout of this system: [design.md](./design.md)
+- Notes on how learners might save progress locally as they go: [storage-support.md](./storage-support.md)
+- Architecture Decision on Parsing Markdown into React: [adr-parsgin-markdown](./adr-parsing-markdown.md)

@@ -1,8 +1,12 @@
 # Custom Markdown
 Lessons and activities have custom component markdown. In Learn, these are enclosed by `### !` followed by some marker.
 
+You can learn a bit about Learn's markdown here: [Learn Markdown](https://learn-viewer.cyvaer.com/?course=https%3A%2F%2Fraw.githubusercontent.com%2FAda-Developers-Academy%2Fcore%2Fmain%2Fonboarding%2Fcourse.yaml&section=Learning+Learn&standard=62bebb46f9b38f8f5ac6617a2852110f&content-file-uid=64c3de83840b43b5fb1394cd6fa50922)
+
 ## Callouts
-These start with `### !callout-<callout-type>` and end with `### !end-callout`. More details and examples: [callouts](./custom-markdown/callouts.md).
+These start with `### !callout-<callout-type>` and end with `### !end-callout`.
+
+For details and more examples, see: [Callouts](./custom-markdown/callouts.md).
 
 ![Rendered info callout that contains the title "`for` Loops" and the text "An alternative syntax is to use for loops with a range. The for loop syntax sets up and modifies something like a counter variable!"](./custom-markdown/callout-info.png)
 
@@ -35,10 +39,6 @@ Known types:
 
 ### Parsing challenges
 Each challenge needs to have its markdown presentation preserved since, for example, the question block can contain complex content such as tables. In addition, structural html components need to be generated that are particular to the data. Finally, data that is *not* presentational (such as the correct answers in a multiple-choice challenge) need to be extracted and parsed so that they can be provided to the interactive components that implement them.
-
-#### TODO
-* [ ] Learn is apparently capable of handling invalid markdown. For example, GitHub markdown makes a mess of challenge `0a8cfa41-b770-4e80-8af0-f4d5127c8424` [see: iterating-over-data/while-loops.md](https://raw.githubusercontent.com/Ada-Developers-Academy/core-unit-1/main/iterating-over-data/while-loops.md). The options list is expected to be a list of code snippets, but for that to work in normal markdown parsing, the snippets need to be indented by at least two spaces.
-* [ ] Consider using [unist-util-assert](https://github.com/syntax-tree/unist-util-assert) for checking that nodes are what we expect before using them.
 
 
 ### tasklist
