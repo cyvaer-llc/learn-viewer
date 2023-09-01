@@ -1,4 +1,4 @@
-import { ChangeEvent, type SyntheticEvent } from "react";
+import { type ChangeEvent } from "react";
 import { useChallengeDispatch, useChallengeState } from "../../contexts/challenge";
 
 type ParagraphEntryProps = {
