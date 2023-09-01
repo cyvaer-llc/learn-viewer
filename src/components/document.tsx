@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useContext } from 'react';
+import React, { SyntheticEvent } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -11,8 +11,8 @@ import remarkFixUrls from '../remark-plugins/remark-fix-urls-plugin';
 import '../remark-plugins/remark-callout-plugin.css';
 import { ClearMarkdownAction } from '../reducers/markdown-actions';
 import { useChallengeReducer } from '../reducers/challenge-reducer';
-import { CurrentMarkdownDispatchContext, CurrentMarkdownStateContext } from '../contexts/current-markdown';
-import { ChallengeStateContext, ChallengeDispatchContext } from '../contexts/challenge';
+import { useCurrentMarkdownDispatch, useCurrentMarkdownState } from '../contexts/current-markdown';
+import { ChallengeStateProvider, ChallengeDispatchProvider } from '../contexts/challenge';
 import Challenge from './challenges/challenge';
 import Checkbox from './challenges/checkbox';
 
@@ -22,19 +22,19 @@ import Checkbox from './challenges/checkbox';
 export default function DocumentWithCtx() {
   const [challengeState, challengeMutators, challengeSelectors] = useChallengeReducer();
   return(
-    <ChallengeDispatchContext.Provider value={challengeMutators}>
-        <ChallengeStateContext.Provider value={[challengeState, challengeSelectors]}>
+    <ChallengeDispatchProvider value={challengeMutators}>
+        <ChallengeStateProvider value={[challengeState, challengeSelectors]}>
           <MemoizedDocument />
-        </ChallengeStateContext.Provider>
-    </ChallengeDispatchContext.Provider>
+        </ChallengeStateProvider>
+    </ChallengeDispatchProvider>
   );
 }
 
 const MemoizedDocument = React.memo(Document);
 
 function Document() {
-  const dispatchMarkdown = useContext(CurrentMarkdownDispatchContext)!;
-  const mdState = useContext(CurrentMarkdownStateContext);
+  const dispatchMarkdown = useCurrentMarkdownDispatch();
+  const mdState = useCurrentMarkdownState();
 
   const close = (evt: SyntheticEvent<HTMLButtonElement>) => {
     evt.preventDefault();
