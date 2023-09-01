@@ -18,6 +18,11 @@ export default function ParagraphEntry(props: ParagraphEntryProps) {
   }
 
   return (
-    <textarea placeholder={ state[challengeId]?.placeholder } className="multiline-entry" onChange={ changeText } value={text} />
+    <textarea
+      placeholder={ state[challengeId]?.placeholder }
+      className="multiline-entry"
+      onChange={ changeText }
+      value={ text }
+    />
   )
 }
