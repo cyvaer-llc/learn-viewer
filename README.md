@@ -28,7 +28,7 @@ We're using [vitest](https://vitest.dev/guide/) as the test runner. It's configu
 ## Contributing
 Contributions are welcome to this project.
 - If you are outside of the organization, you may fork the repository to create branches and submit a PR based on a branch from your fork.
-- If you wish to make more frequent contributions or help administer the project, please contact one of the [contributors](./graphs/contributors).
+- If you wish to make more frequent contributions or help administer the project, please contact one of the [contributors](https://github.com/cyvaer-llc/learn-viewer/graphs/contributors).
 
 ## Deployment
 CICD is being handled by AWS Amplify.
