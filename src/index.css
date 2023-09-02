@@ -1,23 +1,24 @@
 /* Global App style rules */
 h1 {
-	font-size: 2.5rem;
-	font-weight: 200;
+  font-size: 2.5rem;
+  font-weight: 200;
 }
 
 h2 {
-	font-weight: 400;
+  font-weight: 400;
 }
 
 h3 {
-	font-weight: 400;
+  font-weight: 400;
 }
 
 body {
-	font-family: Helvetica, Arial, sans-serif;
+  font-family: Helvetica, Arial, sans-serif;
 }
 
 summary {
-	margin-bottom: .2em;
+  margin-bottom: .2em;
+  cursor: pointer;
 }
 
 summary:hover {
@@ -26,15 +27,15 @@ summary:hover {
 
 pre:has(> code) {
   border-radius: .2em;
-	box-shadow: rgba(0, 0, 0, 0.06) 0px 2px 4px 0px inset;
+  box-shadow: rgba(0, 0, 0, 0.06) 0px 2px 4px 0px inset;
 }
 
 .subtle-link {
-	font-size: .7em;
+  font-size: .7em;
 }
 
 a[target="_blank"]::after {
-	content: "";
+  content: "";
   width: .7em;
   height: .7em;
   background-image: url(./assets/link-external-16.svg);
@@ -46,6 +47,6 @@ a[target="_blank"]::after {
 
 /* Palette variables */
 :root {
-	--dark-bg-color: rgb(37, 84, 136);
-	--success-border: rgb(92, 194, 92);
+  --dark-bg-color: rgb(37, 84, 136);
+  --success-border: rgb(92, 194, 92);
 }
