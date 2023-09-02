@@ -1,8 +1,6 @@
 header {
   padding: 1rem;
   display: flex;
-  background-color: var(--dark-bg-color);
-  color: white;
   gap: 1rem;
   justify-content: stretch;
 }
@@ -14,6 +12,9 @@ main {
 
 footer {
   padding: 1rem;
+}
+
+.dark-bg {
   background-color: var(--dark-bg-color);
   color: white;
 }
@@ -77,4 +78,40 @@ pre:has(code) {
   overflow-x: scroll;
   padding: 1em;
   background-color: #00000010;
+}
+
+.link-section {
+  display: flex;
+  flex-direction: row;
+}
+
+.link-section > *:not(:last-child)::after {
+  content: " ";
+  margin-inline: 1em;
+  border-left: 1px solid black;
+}
+
+.dark-bg .link-section > *:not(:last-child)::after {
+  border-left-color: white;
+}
+
+.dark-bg a {
+  color: lightblue;
+}
+
+.dark-bg a:hover {
+  color: white;
+}
+
+.dark-bg a:visited {
+  color: rgb(228, 198, 228);
+}
+
+.dark-bg a:active {
+  color: rgb(212, 114, 212);
+}
+
+.dark-bg a::after {
+  /* Make the external link icon white */
+  filter: invert(1);
 }
