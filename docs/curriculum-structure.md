@@ -19,7 +19,7 @@ The `course.yaml` has the following structure:
 
 For example:
 
-```JSON
+```JSONC
 {
   ":Course": [
     {
@@ -38,7 +38,7 @@ For example:
         }
       ]
     },
-    /* [...] */
+    /* ... */
   ]
 }
 ```
