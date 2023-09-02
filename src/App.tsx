@@ -18,7 +18,7 @@ export default function App() {
       <CourseSettersProvider value={courseSetters}>
         <CurrentMarkdownStateProvider value={mdState}>
           <CourseStateProvider value={courseState}>
-            <header>
+            <header className='dark-bg'>
               <h1>Learn Curriculum Viewer</h1>
               <CourseSelector />
             </header>
@@ -26,8 +26,15 @@ export default function App() {
               <Course />
               <Document />
             </main>
-            <footer>
-              &copy;2023 Cyvaer
+            <footer className='dark-bg'>
+              <nav className='link-section'>
+                <span>&copy;2023 Cyvaer</span>
+                <span>
+                  <a href='https://github.com/cyvaer-llc/learn-viewer/issues/new/choose' target='_blank' rel='noreferrer'>
+                    Report an issue
+                  </a>
+                </span>
+              </nav>
             </footer>
           </CourseStateProvider>
         </CurrentMarkdownStateProvider>
