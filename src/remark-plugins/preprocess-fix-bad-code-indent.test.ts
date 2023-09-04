@@ -100,4 +100,29 @@ for counter in range(4):
     const result = fixBadCodeIndentInList(input);
     expect(result).toEqual(input);
   });
+
+  it(`indents if the code block finishes on the next line`, () => {
+    const input = `
+* \`\`\`python for counter in range(4): print(counter)
+\`\`\`
+`;
+    const expected = `
+* \`\`\`python for counter in range(4): print(counter)
+  \`\`\`
+`;
+    const result = fixBadCodeIndentInList(input);
+    expect(result).toEqual(expected);
+  });
+
+  it(`correctly handles code blocks on a single line`, () => {
+    const input = `
+* \`\`\`python for counter in range(4): print(counter)\`\`\`
+\`\`\`
+def perfectly_valid_code():
+    return "because it's a separate code block.";
+\`\`\`
+`;
+    const result = fixBadCodeIndentInList(input);
+    expect(result).toEqual(input);
+  });
 });

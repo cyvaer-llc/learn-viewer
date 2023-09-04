@@ -23,7 +23,7 @@ function fixFirstBadCodeIndentInList(lines: string[], startingLine: number): num
   }
 
   const idxCodeEnd = lines.findIndex((line, idx) => idx > idxCodeStart && line.match(/```/));
-  const needsIndent = lines.slice(idxCodeStart + 1, idxCodeEnd).some(line => !line.startsWith('  '));
+  const needsIndent = lines.slice(idxCodeStart + 1, idxCodeEnd + 1).some(line => !line.startsWith('  '));
   if (needsIndent) {
     for (let i = idxCodeStart + 1; i <= idxCodeEnd; i++) {
       lines[i] = '  ' + lines[i];
