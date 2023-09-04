@@ -34,29 +34,8 @@ const visitor: Visitor<Node> = (node: Node, index: number | null, parent: Parent
       const [optionsRoot, optionIds, mdToIdMap] = extractOptionsNodesAndData(options, challengeInfo);
       challengeInfo.options = optionIds;
 
-      // Extract answer data (for multiple choice)
-      // The issue with getting answers is that they need to be correlated with the options so we can
-      // extract the *option IDs* that correspond to the answers. We have to compare the markdown of
-      // the answers to the markdown of the options.
-      //
-      // NOTE:
-      // When it comes time to implement `ordering` types, ONLY answers will exist. ALSO, they will
-      // be in an ordered list, not an unordered list. So we can't share this parsing logic for every type.
       const answer = extractAnswer(childrenBetween);
-      const answerItems: ListItem[] = ['multiple-choice', 'checkbox'].includes(challengeInfo.challengeType) ? getList(answer) : [];
-      let answerIds: string[] = [];
-      try {
-        answerIds = answerItems.map(item => {
-          const markdown = toMarkdown(unList(item));
-          if (!mdToIdMap.has(markdown)) {
-            throw new Error(`Could not find an option with markdown: ${markdown}`);
-          }
-          return mdToIdMap.get(markdown)!;
-        });
-        challengeInfo.answer = answerIds;
-      } catch(err: any) {
-        console.error(`Failed to parse the answer for ${challengeInfo.id}. Error: "${err.message}"`);
-      }
+      const answerIds = getAnswerIds(answer, challengeInfo, mdToIdMap);
 
       console.log("Options:", optionIds, "Answer:", answerIds);
 
@@ -79,11 +58,42 @@ const visitor: Visitor<Node> = (node: Node, index: number | null, parent: Parent
   }
 };
 
+// Extract answer data (for multiple choice)
+// The issue with getting answers is that they need to be correlated with the options so we can
+// extract the *option IDs* that correspond to the answers. We have to compare the markdown of
+// the answers to the markdown of the options.
+//
+// NOTE:
+// When it comes time to implement `ordering` types, ONLY answers will exist. ALSO, they will
+// be in an ordered list, not an unordered list. So we can't share this parsing logic for every type.
+function getAnswerIds(answer: Node[], challengeInfo: ChallengeInfo, mdToIdMap: Map<string, string>) {
+  if (answer.length === 0) {
+    return [];
+  }
+
+  const answerItems: ListItem[] = ['multiple-choice', 'checkbox'].includes(challengeInfo.challengeType) ? getList(answer) : [];
+  let answerIds: string[] = [];
+  try {
+    answerIds = answerItems.map(item => {
+      const markdown = toMarkdown(unList(item));
+      if (!mdToIdMap.has(markdown)) {
+        throw new Error(`Could not find an option with markdown: ${markdown}`);
+      }
+      return mdToIdMap.get(markdown)!;
+    });
+    challengeInfo.answer = answerIds;
+  } catch(err: any) {
+    console.error(`Failed to parse the answer for ${challengeInfo.id}. Error: "${err.message}"`);
+  }
+
+  return answerIds;
+}
+
 const tagPair = (tagName: string) => {
   const isTagStart = (node: Node) => isTag(node, tagName);
   const isTagEnd = (node: Node) => isEndTag(node, tagName);
   return [isTagStart, isTagEnd];
-}
+};
 
 const [isChallengeStart, isChallengeEnd] = tagPair('challenge');
 
