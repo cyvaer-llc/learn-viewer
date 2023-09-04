@@ -7,6 +7,7 @@ import rehypeExternalLinks from 'rehype-external-links';
 import remarkCallout from '../remark-plugins/remark-callout-plugin';
 import remarkChallenges from '../remark-plugins/remark-challenge-plugin';
 import remarkFixUrls from '../remark-plugins/remark-fix-urls-plugin';
+import remarkFixListsWithCode from '../remark-plugins/remark-fix-lists-with-code-plugin';
 
 import '../remark-plugins/remark-callout-plugin.css';
 import { ClearMarkdownAction } from '../reducers/markdown-actions';
@@ -61,10 +62,11 @@ function Document() {
       <ErrorBoundary fallback={<div>The Markdown failed to load</div>}>
         <ReactMarkdown
           remarkPlugins={[
+            [remarkFixUrls, { rootUrl: mdState.markdownRootUrl }],
             remarkGfm,
+            remarkFixListsWithCode,
             remarkCallout,
             remarkChallenges,
-            [remarkFixUrls, { rootUrl: mdState.markdownRootUrl }]
           ]}
           rehypePlugins={[
             rehypeRaw,
