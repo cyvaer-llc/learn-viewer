@@ -8,6 +8,7 @@ import remarkCallout from '../remark-plugins/remark-callout-plugin';
 import remarkChallenges from '../remark-plugins/remark-challenge-plugin';
 import remarkFixUrls from '../remark-plugins/remark-fix-urls-plugin';
 import remarkFixListsWithCode from '../remark-plugins/remark-fix-lists-with-code-plugin';
+import { fixBadCodeIndentInList } from '../remark-plugins/preprocess-fix-bad-code-indent';
 
 import '../remark-plugins/remark-callout-plugin.css';
 import { ClearMarkdownAction } from '../reducers/markdown-actions';
@@ -54,6 +55,10 @@ function Document() {
     );
   }
 
+  // Preprocess the markdown.
+  // Some markdown files have bad code indents that need to be fixed up before parsing.
+  const renderableMarkdown = fixBadCodeIndentInList(mdState.currentMarkdown);
+
   return (
     <div id="markdown-container">
       <div className='right-align'>
@@ -90,7 +95,7 @@ function Document() {
             }
           }}
         >
-          {mdState.currentMarkdown}
+          { renderableMarkdown }
         </ReactMarkdown>
       </ErrorBoundary>
     </div>
