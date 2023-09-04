@@ -20,7 +20,7 @@ export const plugin: Plugin<[FixUrlOptions?], Root> = (options) => {
 
     if (!rNode?.url.startsWith('http')) {
       const withoutFile = options?.rootUrl.slice(0, options?.rootUrl.lastIndexOf('/') + 1);
-      console.log(withoutFile, rNode.url);
+      console.log('Updating URL:', withoutFile, rNode.url);
       rNode.url = withoutFile + rNode.url;
     }
   

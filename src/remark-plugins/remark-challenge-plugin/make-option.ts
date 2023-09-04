@@ -1,5 +1,5 @@
 import { type Node } from 'unist';
-import { List, ListItem, Paragraph } from 'mdast';
+import { List, ListItem, Paragraph, Code, Text } from 'mdast';
 import { toMarkdown } from 'mdast-util-to-markdown';
 import { makeMdToHastNode, GeneratedNode } from './generate-node';
 import { ChallengeInfo } from './md-to-js-parse';
@@ -77,15 +77,22 @@ function makeCheckbox(option: Node, challenge: ChallengeInfo): GeneratedNode {
  * @param node A node that may be a Paragraph or a ListItem
  * @returns The Paragraph inside the ListItem or the Paragraph, depending on which was passed in.
  */
-export function unList(node: Node): Paragraph {
+export function unList(node: Node): Paragraph | Code | Text {
   if (node.type === 'paragraph') { return node as Paragraph; }
+  if (node.type === 'code') { return node as Code; }
+  if (node.type === 'text') { return node as Text; }
   if (node.type !== 'listItem') {
-    throw new Error('Expected a list or paragraph');
+    throw new Error('Expected a list or paragraph/code/text');
   }
 
   const listItem = node as ListItem;
-  if (listItem.children.length !== 1 && listItem.children[0].type !== 'paragraph') {
-    throw new Error('Expected a list with a single paragraph');
+  if (listItem.children.length !== 1) {
+    throw new Error('Expected a list with a single paragraph/code');
   }
-  return listItem.children[0] as Paragraph;
+
+  const firstchild = listItem.children[0];
+  if (firstchild.type === 'paragraph') { return firstchild as Paragraph; }
+  if (firstchild.type === 'code') { return firstchild as Code; }
+
+  throw new Error(`Expected a list with a single paragraph/code, but it had type '${firstchild.type}'`);
 }
