@@ -84,7 +84,7 @@ function getAnswerIds(answer: Node[], challengeInfo: ChallengeInfo, mdToIdMap: M
   }
 
   // If this is a single paragraph node, that's the answer.
-  if (answer.length === 1 && is(answer[0], 'paragraph')) {
+  if (answer.length === 1 && (is(answer[0], 'paragraph') || is(answer[0], 'code') || is(answer[0], 'text'))) {
     return [getAnswerId(answer[0] as Paragraph)];
   }
 
