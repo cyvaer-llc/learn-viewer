@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import dedent from 'dedent';
 import { fixBadCodeIndentInList } from "./preprocess-fix-bad-code-indent";
 
 const input: string = `
@@ -67,19 +68,19 @@ A code block just hanging out
 
 describe('preprocess-fix-bad-code-indent', () => {
   it('fixes bad code indent in one list items', () => {
-    const input = `
-* \`\`\`python
-for counter in range(4):
-    print(counter)
-\`\`\`
-`;
+    const input = dedent`
+      * \`\`\`python
+      for counter in range(4):
+          print(counter)
+      \`\`\`
+      `;
 
-    const expected = `
-* \`\`\`python
-  for counter in range(4):
-      print(counter)
-  \`\`\`
-`;
+    const expected = dedent`
+      * \`\`\`python
+        for counter in range(4):
+            print(counter)
+        \`\`\`
+      `;
     const result = fixBadCodeIndentInList(input);
     expect(result).toEqual(expected);
   });
@@ -90,38 +91,38 @@ for counter in range(4):
   });
 
   it('ignores already good code indent', () => {
-    const input = `
-* \`\`\`python
-  for counter in range(4):
-      print(counter)
-  \`\`\`
-`;
+    const input = dedent`
+      * \`\`\`python
+        for counter in range(4):
+            print(counter)
+        \`\`\`
+      `;
 
     const result = fixBadCodeIndentInList(input);
     expect(result).toEqual(input);
   });
 
   it(`indents if the code block finishes on the next line`, () => {
-    const input = `
-* \`\`\`python for counter in range(4): print(counter)
-\`\`\`
-`;
-    const expected = `
-* \`\`\`python for counter in range(4): print(counter)
-  \`\`\`
-`;
+    const input = dedent`
+      * \`\`\`python for counter in range(4): print(counter)
+      \`\`\`
+      `;
+    const expected = dedent`
+      * \`\`\`python for counter in range(4): print(counter)
+        \`\`\`
+      `;
     const result = fixBadCodeIndentInList(input);
     expect(result).toEqual(expected);
   });
 
   it(`correctly handles code blocks on a single line`, () => {
-    const input = `
-* \`\`\`python for counter in range(4): print(counter)\`\`\`
-\`\`\`
-def perfectly_valid_code():
-    return "because it's a separate code block.";
-\`\`\`
-`;
+    const input = dedent`
+      * \`\`\`python for counter in range(4): print(counter)\`\`\`
+      \`\`\`
+      def perfectly_valid_code():
+          return "because it's a separate code block.";
+      \`\`\`
+      `;
     const result = fixBadCodeIndentInList(input);
     expect(result).toEqual(input);
   });

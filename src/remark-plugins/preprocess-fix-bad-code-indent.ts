@@ -12,7 +12,7 @@ export function fixBadCodeIndentInList(markdown: string): string {
 }
 
 function fixFirstBadCodeIndentInList(lines: string[], startingLine: number): number {
-  const idxCodeStart = lines.findIndex((line, idx) => idx > startingLine && line.match(/^[*-] ```/));
+  const idxCodeStart = lines.findIndex((line, idx) => idx >= startingLine && line.match(/^[*-] ```/));
   if (idxCodeStart === -1) {
     return lines.length;
   }
