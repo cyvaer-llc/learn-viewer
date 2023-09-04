@@ -25,7 +25,8 @@
     "remark-gfm": "^3.0.1",
     "unified": "^10.1.2",
     "unist-builder": "^4.0.0",
-    "unist-util-find-after": "^5.0.0"
+    "unist-util-find-after": "^5.0.0",
+    "unist-util-is": "^6.0.0"
   },
   "devDependencies": {
     "@types/js-yaml": "^4.0.5",

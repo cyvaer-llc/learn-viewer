@@ -1,9 +1,12 @@
 import { visit, SKIP, type Visitor, type VisitorResult } from 'unist-util-visit';
+import { is } from 'unist-util-is';
 import { toMarkdown } from 'mdast-util-to-markdown';
 import { toString as mdastToString } from 'mdast-util-to-string';
+
 import type { Transformer } from 'unified';
 import type { Node, Parent } from 'unist';
-import type { Root, Heading, Text, ListItem } from 'mdast';
+import type { Root, Heading, Text, ListItem, Paragraph } from 'mdast';
+
 import { extractInfoNode, type ChallengeInfo } from './md-to-js-parse';
 import { extractOptionsNodesAndData, getList, unList } from './make-option';
 import { makeMdToHastNode } from './generate-node';
@@ -36,6 +39,7 @@ const visitor: Visitor<Node> = (node: Node, index: number | null, parent: Parent
 
       const answer = extractAnswer(childrenBetween);
       const answerIds = getAnswerIds(answer, challengeInfo, mdToIdMap);
+      challengeInfo.answer = answerIds;
 
       console.log("Options:", optionIds, "Answer:", answerIds);
 
@@ -71,22 +75,28 @@ function getAnswerIds(answer: Node[], challengeInfo: ChallengeInfo, mdToIdMap: M
     return [];
   }
 
-  const answerItems: ListItem[] = ['multiple-choice', 'checkbox'].includes(challengeInfo.challengeType) ? getList(answer) : [];
-  let answerIds: string[] = [];
+  function getAnswerId(node: Paragraph | ListItem): string {
+    const markdown = toMarkdown(unList(node));
+    if (!mdToIdMap.has(markdown)) {
+      return markdown; // If there is no answer ID in the map, just return the answer itself.
+    }
+    return mdToIdMap.get(markdown)!;
+  }
+
+  // If this is a single paragraph node, that's the answer.
+  if (answer.length === 1 && is(answer[0], 'paragraph')) {
+    return [getAnswerId(answer[0] as Paragraph)];
+  }
+
   try {
-    answerIds = answerItems.map(item => {
-      const markdown = toMarkdown(unList(item));
-      if (!mdToIdMap.has(markdown)) {
-        throw new Error(`Could not find an option with markdown: ${markdown}`);
-      }
-      return mdToIdMap.get(markdown)!;
-    });
-    challengeInfo.answer = answerIds;
+    const answerItems: ListItem[] = getList(answer);
+    const answerIds = answerItems.map(getAnswerId);
+    return answerIds;
   } catch(err: any) {
     console.error(`Failed to parse the answer for ${challengeInfo.id}. Error: "${err.message}"`);
   }
 
-  return answerIds;
+  return [];
 }
 
 const tagPair = (tagName: string) => {
