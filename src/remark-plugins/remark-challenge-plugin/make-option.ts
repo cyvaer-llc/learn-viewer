@@ -40,6 +40,21 @@ export function getList(nodes: Node[]): ListItem[] {
     return [];
   }
 
+  // The new format is a paragraph with a|, b|, etc
+  // Assume the first child of the paragraph is text and split its
+  // newline-separate entries up into list items.
+  if (nodes.length === 1 && nodes[0].type === 'paragraph') {
+    const pgph = nodes[0] as Paragraph;
+    if (pgph.children[0].type !== 'text') {
+      throw new Error("We only expect text to be in paragraphs for answers.");
+    }
+    const txt = pgph.children[0] as Text;
+    return txt.value.split('\n').map((value: string) => ({
+      type: 'listItem',
+      children: [{type: 'paragraph', children: [{type: 'text', value: value}] }]
+    }))
+  }
+
   if (nodes.length !== 1 || nodes[0].type !== 'list') {
     throw new Error('Expected a single list');
   }
