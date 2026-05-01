@@ -28,7 +28,7 @@ export default function App() {
             </main>
             <footer className='dark-bg'>
               <nav className='link-section'>
-                <span>&copy;2023 Cyvaer</span>
+                <span>&copy;2026 Cyvaer</span>
                 <span>
                   <a href='https://github.com/cyvaer-llc/learn-viewer/issues/new/choose' target='_blank' rel='noreferrer'>
                     Report an issue

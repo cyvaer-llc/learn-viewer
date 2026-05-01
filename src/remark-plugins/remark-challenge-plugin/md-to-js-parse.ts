@@ -3,7 +3,7 @@
  * This file has parsers to turn the markdown into javascript objects.
  */
 import { Node  } from 'unist';
-import { List, ListItem, Text } from 'mdast';
+import { Html, List, ListItem, Text } from 'mdast';
 
 export type ChallengeInfo = {
   id: string,
@@ -22,6 +22,15 @@ export type ChallengeInfo = {
  * @returns a ChallengeInfo (id, title, and challengeType)
  */
 export function extractInfoNode(nodes: Node[]) : ChallengeInfo {
+  // Ignore any HTML comment nodes first
+  nodes = nodes.filter(node => {
+    if (node.type !== 'html') {
+      return true;
+    }
+    const html = node as Html;
+    return !(html.value.startsWith('<!--') && html.value.endsWith('-->'));
+  });
+
   if (nodes.length < 1 || nodes[0].type !== 'list') {
     throw new Error('First node in a challenge must be a list');
   }
