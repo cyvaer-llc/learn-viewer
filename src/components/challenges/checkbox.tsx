@@ -11,5 +11,10 @@ export default function Checkbox(props: any) {
     toggleOption(evt.currentTarget.name);
   }, []);
 
+  if (!name) {
+    // If this checkbox isn't actually part of a challenge, just render a checkbox.
+    return (<input type="checkbox" />);
+  }
+
   return (<input {...props} checked={ selectors.isSelected(name) } type="checkbox" onChange={changed} />);
 }
