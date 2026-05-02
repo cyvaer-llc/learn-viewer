@@ -85,13 +85,14 @@ function getAnswerIds(answer: Node[], challengeInfo: ChallengeInfo, mdToIdMap: M
 
   // If the answer is like "a|" or "b|", we need to find that prefix in the list of mdToIDMap
   if (is(answer[0], 'paragraph') && toMarkdown(unList(answer[0])).charAt(1) === '|') {
-    const correctAnswerPrefix = toMarkdown(unList(answer[0])).trimEnd();
+    const correctAnswerPrefixes = toMarkdown(unList(answer[0])).trimEnd().split("\n");
+    const correctAnswerMds = [];
     for (const [answerMd, _] of mdToIdMap) {
-      if (answerMd.startsWith(correctAnswerPrefix)) {
-        return mdToIdMap.get(answerMd)!;
+      if (correctAnswerPrefixes.some(correctAnswerPrefix => answerMd.startsWith(correctAnswerPrefix))) {
+        correctAnswerMds.push(mdToIdMap.get(answerMd)!);
       }
     }
-    return [];
+    return correctAnswerMds;
   }
 
   // If this is a single paragraph node, that's the answer.
