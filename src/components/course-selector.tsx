@@ -13,6 +13,7 @@ const courseFromQuery = () => new URL(window?.location.href).searchParams.get('c
 const KNOWN_COURSE_URLS: [string, string][] = [
   ['Ada Core Curriculum', 'https://raw.githubusercontent.com/Ada-Developers-Academy/core/main/course.yaml'],
   ['Ada Precourse', 'https://raw.githubusercontent.com/gSchool/ada-pre-course/master/course.yaml'],
+  ['Ada C26', 'https://github.com/Ada-Developers-Academy/core/blob/main/c26/course.yaml'],
   ['Ada C25', 'https://github.com/Ada-Developers-Academy/core/blob/main/c25/course.yaml'],
   ['Ada C24', 'https://github.com/Ada-Developers-Academy/core/blob/main/c24/course.yaml'],
   ['Ada C23', 'https://github.com/Ada-Developers-Academy/core/blob/main/c23/course.yaml'],
