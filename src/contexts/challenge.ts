@@ -5,6 +5,9 @@ import type { ChallengeMutators, ChallengeState, ChallengeSelectors } from '../r
 const ChallengeDispatchContext = createContext<ChallengeMutators | null>(null);
 const ChallengeStateContext = createContext<[ChallengeState, ChallengeSelectors] | null>(null);
 
+ChallengeDispatchContext.displayName = "ChallengeDispatchContext";
+ChallengeStateContext.displayName = "ChallengeStateContext";
+
 export const ChallengeDispatchProvider = ChallengeDispatchContext.Provider;
 export const ChallengeStateProvider = ChallengeStateContext.Provider;
 
