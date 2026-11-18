@@ -5,6 +5,9 @@ import { createNullCheckUseContext } from "./null-check-use-context";
 const CurrentMarkdownDispatchContext = createContext<Dispatch<MarkdownAction> | null>(null);
 const CurrentMarkdownStateContext = createContext<MarkdownPayload | null>(null);
 
+CurrentMarkdownDispatchContext.displayName = "CurrentMarkdownDispatchContext";
+CurrentMarkdownStateContext.displayName = "CurrentMarkdownStateContext";
+
 export const CurrentMarkdownDispatchProvider = CurrentMarkdownDispatchContext.Provider;
 export const CurrentMarkdownStateProvider = CurrentMarkdownStateContext.Provider;
 

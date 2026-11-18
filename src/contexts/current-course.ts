@@ -5,6 +5,9 @@ import type { CourseSetters, CourseState } from '../reducers/course-reducer';
 const CourseSettersContext = createContext<CourseSetters | null>(null);
 const CourseStateContext = createContext<CourseState | null>(null);
 
+CourseSettersContext.displayName = "CourseSettersContext";
+CourseStateContext.displayName = "CourseStateContext";
+
 export const CourseSettersProvider = CourseSettersContext.Provider;
 export const CourseStateProvider = CourseStateContext.Provider;
 
