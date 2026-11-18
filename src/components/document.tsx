@@ -34,7 +34,7 @@ export default function DocumentWithCtx() {
 
 const MemoizedDocument = React.memo(Document);
 
-function Document() {
+export function Document() {
   const dispatchMarkdown = useCurrentMarkdownDispatch();
   const mdState = useCurrentMarkdownState();
 

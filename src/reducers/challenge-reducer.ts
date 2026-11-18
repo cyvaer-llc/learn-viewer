@@ -1,6 +1,8 @@
 import { useMemo, useReducer } from "react";
 import { ChallengeInfo } from "../remark-plugins/remark-challenge-plugin";
 
+// TODO: This reducer is quite complicated! Document it in `docs`.
+
 // Challenge options should be of the form <challengeId>-option-<optionIndex>
 type ChallengeOption = string;
 export type ChallengeOptionConfiguration = {
